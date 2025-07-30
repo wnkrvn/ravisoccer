@@ -1,0 +1,15 @@
+body {
+  Margem :   0;
+  Acondicionamento:  0;
+  Fonte-Família :   Sem serifas;
+  Fundo: #004080;
+   cor:   Branco;
+    Alinhamento de texto:    Centro;
+}
+#game {
+   Margem-topo :   20 Px;
+}
+canvas {
+   fronteira :   4 Px  Sólido Branco;
+  cor de fundo: #228B22;
+}

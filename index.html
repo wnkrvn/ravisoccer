@@ -4,62 +4,23 @@
   <meta charset="UTF-8" />
   <title>DoggoDash - Bem-vindo</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
-  <style>
-    /* Fundo cinza parecido com Transformice */
-    body {
-      margin: 0;
-      height: 100vh;
-      background-color: #b0b0b0; /* Cinza claro */
-      font-family: 'Poppins', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      color: #2c2c2c;
-    }
-    .container {
-      background: #e1e1e1; /* Fundo um pouco mais claro para o conteúdo */
-      padding: 40px 60px;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-      max-width: 400px;
-      width: 90%;
-    }
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 16px;
-      font-weight: 700;
-      color: #343434;
-    }
-    p {
-      font-size: 1.4rem;
-      margin-bottom: 30px;
-      font-weight: 500;
-    }
-    .botoes {
-      display: flex;
-      justify-content: center;
-      gap: 25px;
-    }
-    .btn {
-      background-color: #4a90e2;
-      color: white;
-      text-decoration: none;
-      padding: 14px 28px;
-      border-radius: 8px;
-      font-size: 1.2rem;
-      font-weight: 600;
-      transition: background-color 0.3s ease;
-      box-shadow: 0 4px 8px rgba(74, 144, 226, 0.4);
-    }
-    .btn:hover {
-      background-color: #357ABD;
-      box-shadow: 0 6px 14px rgba(53, 122, 189, 0.6);
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body class="inicio">
   <div class="container">
+    <div class="logo">
+      <!-- Logo SVG embutida -->
+      <svg width="120" height="120" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-label="DoggoDash Logo" role="img">
+        <circle cx="32" cy="32" r="30" fill="#4a90e2" />
+        <path d="M20 40c0-6 8-6 8-6s8 0 8 6" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"/>
+        <circle cx="24" cy="28" r="4" fill="#fff"/>
+        <circle cx="40" cy="28" r="4" fill="#fff"/>
+        <circle cx="24" cy="28" r="2" fill="#4a90e2"/>
+        <circle cx="40" cy="28" r="2" fill="#4a90e2"/>
+        <path d="M28 44c2 3 8 3 10 0" stroke="#fff" stroke-width="3" stroke-linecap="round" />
+      </svg>
+    </div>
+
     <h1>🐶 DoggoDash</h1>
     <p>Ajude os doguinhos a pegar o osso e levar pra casinha!</p>
     <div class="botoes">
@@ -67,7 +28,7 @@
       <a href="register.html" class="btn">Cadastrar</a>
     </div>
   </div>
-  
+
   <script src="login.js"></script>
 </body>
 </html>

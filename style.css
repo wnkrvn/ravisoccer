@@ -45,6 +45,8 @@ p {
   font-size: 18px;
   font-weight: bold;
   transition: background-color 0.3s ease;
+  cursor: pointer;
+  border: none;
 }
 
 .btn:hover {
@@ -62,4 +64,26 @@ p {
 
 .btn.jogar:hover {
   background-color: #e6b800;
+}
+
+/* Estilos para os campos de formulário */
+.input-field {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+/* Estilos para links */
+.link {
+  color: #ffcc00;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.link:hover {
+  text-decoration: underline;
 }

@@ -1,19 +1,30 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Login - DoggoDash</title>
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body class="inicio">
   <div class="container">
-    <h2>🐾 Entrar no DoggoDash</h2>
-    <form action="#" method="post">
-      <input type="text" name="username" placeholder="Usuário" required>
-      <input type="password" name="password" placeholder="Senha" required>
-      <button type="submit" class="btn">Entrar</button>
+    <h1>Login</h1>
+    <form id="loginForm" action="#" method="post">
+      <input type="email" name="email" placeholder="Email" required class="input-field" />
+      <input type="password" name="password" placeholder="Senha" required class="input-field" />
+      <button type="submit" class="btn jogar">Entrar</button>
     </form>
-    <p>Não tem conta? <a href="register.html">Cadastrar</a></p>
+    <p>Não tem uma conta? <a href="register.html" class="link">Cadastre-se</a></p>
+    <p><a href="index.html" class="link">Voltar para Home</a></p>
   </div>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      alert('Login realizado com sucesso! (Funcionalidade para implementar)');
+      window.location.href = 'jogo.html';
+    });
+  </script>
 </body>
 </html>

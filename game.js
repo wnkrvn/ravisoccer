@@ -1,76 +1,62 @@
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+canvas.width = 800;
+canvas.height = 500;
 
-const player = { x: 50, y: 200, w: 30, h: 30, color: 'white', speed: 5 };
-const bot = { x: 720, y: 200, w: 30, h: 30, color: 'red', speed: 3 };
-const ball = { x: 400, y: 250, r: 10, dx: 4, dy: 2, color: 'yellow' };
+// Jogador (cachorro)
+let player = {
+  x: 100,
+  y: 400,
+  width: 40,
+  height: 40,
+  color: "brown",
+  dx: 0,
+  dy: 0,
+  speed: 3,
+  gravity: 0.8,
+  jumping: false
+};
 
-function drawPlayer(p) {
-  ctx.fillStyle = p.color;
-  ctx.fillRect(p.x, p.y, p.w, p.h);
-}
+let keys = {};
 
-function drawBall(b) {
-  ctx.beginPath();
-  ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-  ctx.fillStyle = b.color;
-  ctx.fill();
-  ctx.closePath();
-}
+document.addEventListener("keydown", (e) => keys[e.key] = true);
+document.addEventListener("keyup", (e) => keys[e.key] = false);
 
-function moveBot() {
-  if (bot.y + bot.h / 2 < ball.y) bot.y += bot.speed;
-  else if (bot.y + bot.h / 2 > ball.y) bot.y -= bot.speed;
-}
+function update() {
+  // Movimento horizontal
+  if (keys["ArrowRight"]) player.dx = player.speed;
+  else if (keys["ArrowLeft"]) player.dx = -player.speed;
+  else player.dx = 0;
 
-function updateBall() {
-  ball.x += ball.dx;
-  ball.y += ball.dy;
-
-  if (ball.y + ball.r > canvas.height || ball.y - ball.r < 0) ball.dy *= -1;
-
-  // colisão com player
-  if (
-    ball.x - ball.r < player.x + player.w &&
-    ball.y > player.y &&
-    ball.y < player.y + player.h
-  ) {
-    ball.dx *= -1;
-    ball.x = player.x + player.w + ball.r;
+  // Pulo
+  if (keys[" "] && !player.jumping) {
+    player.dy = -15;
+    player.jumping = true;
   }
 
-  // colisão com bot
-  if (
-    ball.x + ball.r > bot.x &&
-    ball.y > bot.y &&
-    ball.y < bot.y + bot.h
-  ) {
-    ball.dx *= -1;
-    ball.x = bot.x - ball.r;
-  }
+  // Gravidade
+  player.dy += player.gravity;
+  player.y += player.dy;
+  player.x += player.dx;
 
-  // gols (reinicia)
-  if (ball.x < 0 || ball.x > canvas.width) {
-    ball.x = 400;
-    ball.y = 250;
-    ball.dx *= -1;
-    ball.dy = 2;
+  // Chão
+  if (player.y + player.height >= canvas.height) {
+    player.y = canvas.height - player.height;
+    player.dy = 0;
+    player.jumping = false;
   }
 }
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawPlayer(player);
-  drawPlayer(bot);
-  drawBall(ball);
-  moveBot();
-  updateBall();
-  requestAnimationFrame(draw);
+  ctx.fillStyle = player.color;
+  ctx.fillRect(player.x, player.y, player.width, player.height);
 }
 
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowUp' && player.y > 0) player.y -= player.speed;
-  if (e.key === 'ArrowDown' && player.y + player.h < canvas.height) player.y += player.speed;
-});
+function gameLoop() {
+  update();
+  draw();
+  requestAnimationFrame(gameLoop);
+}
 
-draw();
+gameLoop();

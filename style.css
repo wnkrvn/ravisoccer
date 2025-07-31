@@ -1,15 +1,17 @@
 body {
-  Margem :   0;
-  Acondicionamento:  0;
-  Fonte-Família :   Sem serifas;
-  Fundo: #004080;
-   cor:   Branco;
-    Alinhamento de texto:    Centro;
+  margin: 0;
+  font-family: sans-serif;
+  text-align: center;
+  background-color: #f4f4f4;
 }
-#game {
-   Margem-topo :   20 Px;
-}
+
 canvas {
-   fronteira :   4 Px  Sólido Branco;
-  cor de fundo: #228B22;
+  border: 2px solid #000;
+  margin-top: 20px;
+  background-color: #88c;
+}
+
+#moedas {
+  margin-top: 10px;
+  font-size: 18px;
 }

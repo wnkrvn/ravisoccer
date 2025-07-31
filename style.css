@@ -1,13 +1,18 @@
 body {
-  margin: 0;
-  background: linear-gradient(to bottom, #a3d7ff, #ffffff);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  text-align: center;
+  background-color: #e3f2fd;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+h1 {
+  font-size: 36px;
+  color: #4a148c;
+  margin: 20px 0;
 }
 
 canvas {
-  border: 3px solid #333;
-  background-color: #f5f5dc;
+  border: 3px solid #4a148c;
+  background: #fff8e1;
+  display: block;
+  margin: 0 auto;
 }

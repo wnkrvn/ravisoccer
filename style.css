@@ -1,89 +1,47 @@
-body.inicio {
+body {
   font-family: 'Poppins', sans-serif;
-  background: url('bg.jpg') no-repeat center center fixed;
-  background-size: cover;
-  color: white;
-  text-align: center;
   margin: 0;
   padding: 0;
+  background: #f1f1f1;
+  text-align: center;
 }
 
-.container {
-  position: relative;
-  top: 50%;
-  transform: translateY(50%);
-  background: rgba(0, 0, 0, 0.6);
-  padding: 40px;
-  border-radius: 20px;
-  max-width: 400px;
-  margin: 0 auto;
+.container, .form-container {
+  margin-top: 100px;
 }
 
-h1 {
-  font-size: 48px;
-  margin-bottom: 20px;
-}
-
-p {
-  font-size: 18px;
-  margin-bottom: 30px;
-}
-
-.botoes {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+h1, h2 {
+  color: #333;
 }
 
 .btn {
-  display: block;
-  background-color: #007bff;
+  display: inline-block;
+  margin: 10px;
+  padding: 12px 24px;
+  background: #4CAF50;
   color: white;
-  padding: 15px;
-  border-radius: 10px;
   text-decoration: none;
-  font-size: 18px;
+  border-radius: 10px;
   font-weight: bold;
-  transition: background-color 0.3s ease;
-  cursor: pointer;
-  border: none;
 }
 
 .btn:hover {
-  background-color: #0056b3;
+  background: #45a049;
 }
 
-/* Estilo específico pro botão Jogar */
-.btn.jogar {
-  background-color: #ffcc00;
-  color: #000;
-  font-size: 20px;
-  font-weight: bold;
-  border: 2px solid #fff;
+.form-container form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.btn.jogar:hover {
-  background-color: #e6b800;
+.form-container input {
+  margin: 10px;
+  padding: 10px;
+  width: 250px;
 }
 
-/* Estilos para os campos de formulário */
-.input-field {
-  width: 100%;
-  padding: 12px 15px;
-  margin-bottom: 20px;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  box-sizing: border-box;
-}
-
-/* Estilos para links */
-.link {
-  color: #ffcc00;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.link:hover {
-  text-decoration: underline;
+canvas {
+  border: 2px solid #000;
+  margin-top: 20px;
 }

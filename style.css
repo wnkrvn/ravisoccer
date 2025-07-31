@@ -1,37 +1,80 @@
-body.inicio {
-  background-image: url('https://i.imgur.com/9a8JvFe.jpg'); /* fundo cartoon substituível */
-  background-size: cover;
-  background-position: center;
-  font-family: 'Arial', sans-serif;
+/* Fundo geral */
+body {
   margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  color: #fff;
-  text-align: center;
+  padding: 0;
+  overflow: hidden;
+  background: url('fundo.png') no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
 }
 
-.container {
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 30px;
+/* Tela de login e cadastro */
+.login-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 40px;
   border-radius: 20px;
-  box-shadow: 0 0 20px #000;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  max-width: 300px;
 }
 
-.btn {
-  display: inline-block;
-  padding: 12px 25px;
-  margin: 10px;
-  background-color: #ff9800;
-  color: #fff;
+.login-container h1 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
+.login-container input {
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px;
   border: none;
   border-radius: 10px;
-  text-decoration: none;
-  font-size: 18px;
-  transition: background 0.3s ease;
+  font-size: 16px;
+  box-sizing: border-box;
 }
 
-.btn:hover {
+.login-container input:focus {
+  outline: 2px solid #ff9800;
+}
+
+.login-container button {
+  width: 100%;
+  padding: 12px;
+  background-color: #ff9800;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.login-container button:hover {
   background-color: #e68900;
+}
+
+.toggle-link {
+  margin-top: 10px;
+  color: #007bff;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 14px;
+}
+
+.toggle-link:hover {
+  text-decoration: underline;
+}
+
+/* Jogo */
+canvas {
+  display: block;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
 }

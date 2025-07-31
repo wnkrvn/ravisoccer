@@ -1,62 +1,65 @@
-/* style.css */
-
-body {
-  margin: 0;
-  height: 100vh;
-  background-color: #b0b0b0; /* Cinza claro */
+body.inicio {
   font-family: 'Poppins', sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background: url('bg.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: white;
   text-align: center;
-  color: #2c2c2c;
+  margin: 0;
+  padding: 0;
 }
 
 .container {
-  background: #e1e1e1; /* Fundo um pouco mais claro */
-  padding: 40px 60px;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  position: relative;
+  top: 50%;
+  transform: translateY(50%);
+  background: rgba(0, 0, 0, 0.6);
+  padding: 40px;
+  border-radius: 20px;
   max-width: 400px;
-  width: 90%;
-}
-
-.logo {
-  margin-bottom: 25px;
+  margin: 0 auto;
 }
 
 h1 {
-  font-size: 3rem;
-  margin-bottom: 16px;
-  font-weight: 700;
-  color: #343434;
+  font-size: 48px;
+  margin-bottom: 20px;
 }
 
 p {
-  font-size: 1.4rem;
+  font-size: 18px;
   margin-bottom: 30px;
-  font-weight: 500;
 }
 
 .botoes {
   display: flex;
-  justify-content: center;
-  gap: 25px;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .btn {
-  background-color: #4a90e2;
+  display: block;
+  background-color: #007bff;
   color: white;
+  padding: 15px;
+  border-radius: 10px;
   text-decoration: none;
-  padding: 14px 28px;
-  border-radius: 8px;
-  font-size: 1.2rem;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: bold;
   transition: background-color 0.3s ease;
-  box-shadow: 0 4px 8px rgba(74, 144, 226, 0.4);
 }
 
 .btn:hover {
-  background-color: #357ABD;
-  box-shadow: 0 6px 14px rgba(53, 122, 189, 0.6);
+  background-color: #0056b3;
+}
+
+/* Estilo específico pro botão Jogar */
+.btn.jogar {
+  background-color: #ffcc00;
+  color: #000;
+  font-size: 20px;
+  font-weight: bold;
+  border: 2px solid #fff;
+}
+
+.btn.jogar:hover {
+  background-color: #e6b800;
 }

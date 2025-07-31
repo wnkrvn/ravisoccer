@@ -1,19 +1,31 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Cadastrar - DoggoDash</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Cadastro - DoggoDash</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body class="inicio">
   <div class="container">
-    <h2>🐶 Criar conta no DoggoDash</h2>
-    <form action="#" method="post">
-      <input type="text" name="username" placeholder="Usuário" required>
-      <input type="password" name="password" placeholder="Senha" required>
-      <button type="submit" class="btn">Cadastrar</button>
+    <h1>Cadastro</h1>
+    <form id="registerForm" action="#" method="post">
+      <input type="text" name="name" placeholder="Nome" required class="input-field" />
+      <input type="email" name="email" placeholder="Email" required class="input-field" />
+      <input type="password" name="password" placeholder="Senha" required class="input-field" />
+      <button type="submit" class="btn jogar">Cadastrar</button>
     </form>
-    <p>Já tem conta? <a href="login.html">Entrar</a></p>
+    <p>Já tem uma conta? <a href="login.html" class="link">Faça login</a></p>
+    <p><a href="index.html" class="link">Voltar para Home</a></p>
   </div>
+
+  <script>
+    const form = document.getElementById('registerForm');
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      alert('Cadastro realizado com sucesso! (Funcionalidade para implementar)');
+      window.location.href = 'login.html';
+    });
+  </script>
 </body>
 </html>

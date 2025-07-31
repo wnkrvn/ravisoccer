@@ -1,18 +1,37 @@
-body {
+body.inicio {
+  background-image: url('https://i.imgur.com/9a8JvFe.jpg'); /* fundo cartoon substituível */
+  background-size: cover;
+  background-position: center;
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: #fff;
   text-align: center;
-  background-color: #e3f2fd;
-  font-family: "Comic Sans MS", cursive, sans-serif;
 }
 
-h1 {
-  font-size: 36px;
-  color: #4a148c;
-  margin: 20px 0;
+.container {
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 0 20px #000;
 }
 
-canvas {
-  border: 3px solid #4a148c;
-  background: #fff8e1;
-  display: block;
-  margin: 0 auto;
+.btn {
+  display: inline-block;
+  padding: 12px 25px;
+  margin: 10px;
+  background-color: #ff9800;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 18px;
+  transition: background 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #e68900;
 }

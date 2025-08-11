@@ -5,36 +5,167 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Quiz São Paulo FC — 100 Perguntas</title>
 <style>
-  :root{
+  :root {
     --card-bg: rgba(255,255,255,0.92);
     --accent: #e60012;
     --text: #0b1220;
   }
-  html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
-  body{
-    background: url('background.png') center top / cover no-repeat, linear-gradient(180deg,#87d8f6 0%,#b2f1ff 100%);
-    display:flex;align-items:center;justify-content:center;padding:18px;
+  html, body {
+    height: 100%;
+    margin: 0;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   }
-  .app{width:100%;max-width:420px}
-  .card{
-    background:var(--card-bg);border-radius:16px;padding:16px;box-shadow:0 12px 28px rgba(11,18,32,0.14);
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    background: linear-gradient(to right, #e60012 33.33%, #ffffff 33.33%, #ffffff 66.66%, #000000 66.66%);
   }
-  .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-  .brand{display:flex;gap:10px;align-items:center}
-  .logo{width:46px;height:46px;border-radius:10px;background:linear-gradient(180deg,#fff,#f4f4f4);display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--accent);box-shadow:0 4px 10px rgba(0,0,0,0.08)}
-  .title{font-weight:800}
-  .meta{font-size:13px;color:rgba(11,18,32,0.6);text-align:right}
-  .question{
-    background:rgba(255,255,255,0.95);padding:18px;border-radius:14px;font-size:18px;font-weight:800;text-align:center;min-height:84px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 18px rgba(0,0,0,0.06)
+  .app {
+    width: 100%;
+    max-width: 420px;
   }
-  .answers{margin-top:14px;display:grid;grid-template-columns:1fr;gap:12px}
-  .ans{
-    background:rgba(255,255,255,0.92);padding:12px;border-radius:12px;font-weight:800;text-align:center;cursor:pointer;user-select:none;box-shadow:0 6px 14px rgba(0,0,0,0.06);transition:transform .12s ease, box-shadow .12s ease;
+  .card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 12px 28px rgba(11, 18, 32, 0.14);
   }
-  .ans:active{transform:translateY(2px)}
-  .ans:hover{box-shadow:0 10px 20px rgba(0,0,0,0.08)}
-  .ans.correct{background:#29a745;color:#fff}
-  .ans.wrong{background:#d32f2f;color:#fff;opacity:0.95}
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .brand {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .logo {
+    width: 46px;
+    height: 46px;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #fff, #f4f4f4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    color: var(--accent);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  }
+  .title {
+    font-weight: 800;
+  }
+  .meta {
+    font-size: 13px;
+    color: rgba(11, 18, 32, 0.6);
+    text-align: right;
+  }
+  .question {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 18px;
+    border-radius: 14px;
+    font-size: 18px;
+    font-weight: 800;
+    text-align: center;
+    min-height: 84px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+  }
+  .answers {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .ans {
+    background: rgba(255, 255, 255, 0.92);
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 800;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .ans:active {
+    transform: translateY(2px);
+  }
+  .ans:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+  }
+  .ans.correct {
+    background: #29a745;
+    color: #fff;
+  }
+  .ans.wrong {
+    background: #d32f2f;
+    color: #fff;
+    opacity: 0.95;
+  }
+  .controls {
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+    margin-top: 12px;
+  }
+  .btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 12px;
+    border: 0;
+    font-weight: 900;
+    cursor: pointer;
+  }
+  .btn.next {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn.prev {
+    background: transparent;
+    color: var(--text);
+    border: 2px solid rgba(11, 18, 32, 0.06);
+  }
+  .footer {
+    font-size: 12px;
+    color: rgba(11, 18, 32, 0.6);
+    text-align: center;
+    margin-top: 10px;
+  }
+  @media (max-width: 380px) {
+    .question {
+      font-size: 16px;
+      padding: 12px;
+    }
+    .ans {
+      padding: 10px;
+      font-size: 14px;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+    <div class="card" id="card">
+      <div class="header">
+        <div class="brand">
+          <div class="logo">SP</div>
+          <div>
+            <div class="title">Quiz São Paulo FC</div>
+            <div style="font-size:12px;color:rgba(11,18,32,0.55)">100 perguntas • vidas infinitas</div>
+          </div>
+        </div>
+      </div>
+      <!-- O restante do conteúdo do card -->
+    </div>
+  </div>
+</body>
+</html>  .ans.wrong{background:#d32f2f;color:#fff;opacity:0.95}
   .controls{display:flex;gap:8px;justify-content:space-between;margin-top:12px}
   .btn{flex:1;padding:10px;border-radius:12px;border:0;font-weight:900;cursor:pointer}
   .btn.next{background:var(--accent);color:#fff}

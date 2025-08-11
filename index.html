@@ -1,53 +1,228 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Perguntados Empolgante - Esportes & Matemática</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quiz São Paulo FC — Perguntados</title>
+  <style>
+    :root{--card-bg:rgba(255,255,255,0.95);--accent:#e60012;--text:#0b1220}
+    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
+    body{background: #72c6e3 url('background.png') center top / cover no-repeat, linear-gradient(180deg,#87d8f6 0%,#b2f1ff 100%);display:flex;align-items:center;justify-content:center;padding:20px}
+    .app{width:100%;max-width:420px}
+    .scene{position:relative;padding:18px;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,0.85),rgba(255,255,255,0.75));box-shadow:0 10px 25px rgba(11,18,32,0.15)}
+    .question-box{background:var(--card-bg);border-radius:16px;padding:14px 16px;font-size:18px;font-weight:700;color:var(--text);text-align:center;box-shadow:0 6px 18px rgba(0,0,0,0.08)}
+    .choices{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}
+    .choice{background:var(--card-bg);padding:12px 14px;border-radius:12px;font-weight:700;text-align:center;font-size:16px;border:3px solid transparent}
+    .choice:hover{transform:translateY(-2px);transition:all .14s}
+    .choice.correct{border-color:green}
+    .choice.wrong{border-color:red;opacity:0.7}
+    .controls{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:14px}
+    .btn{flex:1;padding:10px 12px;border-radius:12px;border:0;background:var(--accent);color:white;font-weight:800}
+    .btn.secondary{background:transparent;color:var(--text);border:2px solid rgba(11,18,32,0.06)}
+    .footer{font-size:12px;color:#233;margin-top:12px;text-align:center}
+    .score{font-weight:900;color:var(--accent)}
+    @media (max-width:420px){.question-box{font-size:16px}.choice{font-size:15px}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="scene" id="app">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="display:flex;gap:8px;align-items:center">
+          <div style="width:44px;height:44px;border-radius:10px;background:rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--accent)">SP</div>
+          <div style="font-weight:800">Quiz São Paulo FC</div>
+        </div>
+        <div style="text-align:right;font-size:13px">Pergunta <span id="qNum">1</span>/100<br><span class="score" id="score">0</span> pts</div>
+      </div>
 
-  :root {
-    --bg1: #0d47a1;
-    --bg2: #1976d2;
-    --btn-bg: #ffca28;
-    --btn-hover: #ffc107;
-    --text-light: #fff;
-    --correct: #4caf50;
-    --wrong: #e53935;
-    --shadow: rgba(0, 0, 0, 0.3);
-  }
+      <div class="question-box" id="question">Carregando...</div>
 
-  * {
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-  }
+      <div class="choices" id="choices"></div>
 
-  body {
-    margin: 0; min-height: 100vh;
-    background: linear-gradient(135deg, var(--bg1), var(--bg2));
-    color: var(--text-light);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 15px;
-    overflow-x: hidden;
-  }
+      <div class="controls">
+        <button class="btn secondary" id="btnPrev">Anterior</button>
+        <button class="btn" id="btnNext">Próxima</button>
+      </div>
 
-  h1 {
-    margin-top: 30px;
-    font-size: 2.8rem;
-    text-align: center;
-    text-shadow: 2px 2px 6px var(--shadow);
-    user-select: none;
-  }
+      <div class="footer">Toque na resposta — estilo Perguntados. Fundo ilustrativo (substitua <code>background.png</code> pelo arquivo da imagem).</div>
+    </div>
+  </div>
 
-  #themeSelectSection, #gameSection {
-    width: 100%; max-width: 480px;
-    background: rgba(255 255 255 / 0.1);
-    border-radius: 20px;
-    padding: 25px 30px;
+  <script>
+    const questions = [
+      {q:'Em que ano o São Paulo FC foi fundado?', choices:['1930','1935','1937','1940'], a:2},
+      {q:'Qual é o apelido tradicional do São Paulo?', choices:['Tricolor','Alvinegro','Colorado','Raposa'], a:0},
+      {q:'Qual é o estádio oficial do São Paulo?', choices:['Morumbi','Pacaembu','Allianz Parque','Arena Corinthians'], a:0},
+      {q:'Quantas vezes o São Paulo venceu a Taça Libertadores até 2020?', choices:['1','2','3','4'], a:2},
+      {q:'Quem é o maior artilheiro histórico do clube (até 2020)?', choices:['Careca','Leônidas','Rogério Ceni','Luis Fabiano'], a:2},
+      {q:'Qual camisa ficou famosa com o goleiro Rogério Ceni?', choices:['1','10','12','99'], a:0},
+      {q:'Em que ano o São Paulo conquistou o Mundial de Clubes pela primeira vez?', choices:['1992','1993','2005','2006'], a:1},
+      {q:'Quem foi técnico campeão mundial com o São Paulo em 1992?', choices:['Telê Santana','Muricy Ramalho','Telê Santana (1992)','Leco'], a:2},
+      {q:'Qual jogador é ídolo e também virou técnico do clube?', choices:['Cuca','Rogério Ceni','Carlo Ancelotti','Dunga'], a:1},
+      {q:'Qual é a cor predominante no escudo do São Paulo?', choices:['Azul','Vermelho','Branco','Verde'], a:2},
+      {q:'Qual atacante foi artilheiro do Brasileirão pelo São Paulo em 2006?', choices:['Pato','Luis Fabiano','Careca','Kaká'], a:1},
+      {q:'Qual rival é considerado clássico com o São Paulo?', choices:['Palmeiras','Grêmio','Fluminense','Cruzeiro'], a:0},
+      {q:'Qual deles já jogou no São Paulo: Kaká, Neymar, Messi, Iniesta?', choices:['Neymar','Kaká','Messi','Iniesta'], a:1},
+      {q:'Qual o nome do mascote histórico do São Paulo?', choices:['Soberano','Mosqueteiro','Mascote Tricolor','Santo Paulo'], a:1},
+      {q:'Quem é o maior vencedor do clube como treinador (títulos importantes)?', choices:['Telê Santana','Muricy Ramalho','Telê Santana','Vaghi'], a:0},
+      {q:'O São Paulo já foi campeão brasileiro em 2006. Quem era o técnico?', choices:['Muricy Ramalho','Paulo Autuori','Telê Santana','Levir Culpi'], a:0},
+      {q:'Qual jogador do São Paulo é famoso por bater pênaltis com precisão e também era goleiro?', choices:['Rogério Ceni','Rivaldo','Dida','Taffarel'], a:0},
+      {q:'Qual time paulista tem o clássico chamado Majestoso com o São Paulo?', choices:['Santos','Corinthians','Palmeiras','Ponte Preta'], a:0},
+      {q:'Quantas estrelas há no escudo do São Paulo (acima)?', choices:['3','2','1','4'], a:0},
+      {q:'Em que bairro fica o estádio do Morumbi?', choices:['Bom Retiro','Jardim Paulistano','Morumbi','Tatuapé'], a:2},
+      {q:'Qual foi o primeiro grande ídolo do São Paulo na década de 1940?', choices:['Leônidas','Rogério Ceni','Cícero','Pepe'], a:0},
+      {q:'Quem é conhecido como maior artilheiro em uma só temporada pelo São Paulo?', choices:['Luis Fabiano','Careca','Rogério Ceni','Leônidas'], a:1},
+      {q:'Qual jogador marcou o gol do título mundial de 1993 contra o Milan?', choices:['Palhinha','Müller','Toninho Cerezo','Capita'], a:1},
+      {q:'Qual desses jogadores foi revelado nas categorias de base do São Paulo?', choices:['Kaká','Ronaldo','Ronaldinho','Pelé'], a:0},
+      {q:'Em 2005 quem foi treinador quando o São Paulo ganhou a Libertadores?', choices:['Paulo Autuori','Telê Santana','Muricy Ramalho','Carlos Alberto Parreira'], a:0},
+      {q:'Qual camisa histórico do São Paulo é associada ao atacante Luis Fabiano?', choices:['9','10','11','7'], a:0},
+      {q:'Qual desses goleadores usou a camisa 11 pelo São Paulo?', choices:['Müller','Careca','Kaká','Raí'], a:0},
+      {q:'Quem foi presidente do clube durante a era de títulos nos anos 90?', choices:['Juvenal Juvêncio','Carlos Miguel Aidar','Marcelo Portugal Gouvea','Leco'], a:2},
+      {q:'Qual desses clássicos envolve São Paulo e Corinthians?', choices:['Majestoso','Choque-Rei','Clássico Alvinegro','San-São'], a:0},
+      {q:'Qual jogador são-paulino ficou famoso por voleios e jogou nos anos 80 e 90?', choices:['Müller','Kaká','Raí','Careca'], a:2},
+      {q:'Em 1970 o São Paulo tinha qual problema histórico?', choices:['Dívidas e reformulações','Muita grana','Estádio novo','Título mundial'], a:0},
+      {q:'Quem entrou para a história por bater muitos gols de falta no clube?', choices:['Raí','Rogério Ceni','Denílson','Hernanes'], a:0},
+      {q:'Qual desses jogadores teve passagem marcante no Morumbi e virou ídolo?', choices:['Rogério Ceni','Neymar','Rivaldo','Kléberson'], a:0},
+      {q:'Qual foi a década de ouro de títulos internacionais do São Paulo?', choices:['1970s','1980s','1990s','2000s'], a:2},
+      {q:'Quem treinou o São Paulo na conquista do bicampeonato brasileiro em 2006?', choices:['Muricy Ramalho','Telê Santana','Paulo Autuori','Levir Culpi'], a:0},
+      {q:'Qual atacante peruano famoso jogou no São Paulo? (dica: década de 60/70)', choices:['Teófilo Cubillas','Julio Meléndez','Flavio Maestri','Nené'], a:1},
+      {q:'Em que ano o São Paulo conquistou o primeiro Campeonato Brasileiro oficial (Taça de Prata/Br)?', choices:['1977','1971','1986','1991'], a:1},
+      {q:'Qual destes jogadores foi capitão do time e ídolo nos anos 2000?', choices:['Rogério Ceni','Kaká','Müller','Luis Fabiano'], a:0},
+      {q:'Qual clube tem o maior público registrado no Morumbi (partidas históricas)?', choices:['Seleção Brasileira','Corinthians','Palmeiras','Santos'], a:0},
+      {q:'Quem foi o técnico responsável por lançar Kaká no profissional?', choices:['Muricy Ramalho','Paulo Autuori','O técnico das bases','Jair Picerni'], a:1},
+      {q:'Quem é o maior goleador em finais pelo São Paulo?', choices:['Luis Fabiano','Müller','Rogério Ceni','Palhinha'], a:0},
+      {q:'Qual desses foi um meia clássico do São Paulo nos anos 90?', choices:['Raí','Zico','Kaká','Rivellino'], a:0},
+      {q:'Qual é o principal símbolo do escudo do São Paulo?', choices:['A sigla SPFC','A águia','O leão','O cavalo'], a:0},
+      {q:'Quem marcou muitos gols de pênalti e faltas e também era técnico depois?', choices:['Rogério Ceni','Luis Fabiano','Careca','Ceni (Rogério)'], a:0},
+      {q:'Qual camisa ficou famosa com o meia Raí?', choices:['7','8','10','11'], a:2},
+      {q:'Qual desses foi um time dominante no Brasileirão enfrentando o São Paulo nos anos 2000?', choices:['Chelsea','Flamengo','Palmeiras','Bayern'], a:2},
+      {q:'Qual desses títulos o São Paulo NÃO conquistou?', choices:['Liga dos Campeões da UEFA','Copa Libertadores','Campeonato Brasileiro','Mundial de Clubes/FIFA'], a:0},
+      {q:'Quem foi artilheiro do Mundial de Clubes em 2005 pelo São Paulo?', choices:['Luis Fabiano','Mineiro','Adriano','Rogério Ceni'], a:0},
+      {q:'Qual jogador são-paulino marcou gols decisivos na Libertadores 2005?', choices:['Mineiro','Ricardo Rocha','Ailton','Lúcio'], a:0},
+      {q:'Qual desses goleiros também foi destaque no São Paulo?', choices:['Ganso','Rogério Ceni','Rogério Pinheiro','Diego Alves'], a:1},
+      {q:'Quem é lembrado como maior ídolo da torcida tricolor nas décadas de 1990/2000?', choices:['Raí','Rivellino','Romário','Careca'], a:0},
+      {q:'Qual foi o principal rival do São Paulo nas finais estaduais históricas?', choices:['Corinthians','Botafogo','Vasco','Grêmio'], a:0},
+      {q:'Qual jogador foi destaque defensivo e virou ídolo no São Paulo: Lugano, Maradona, Xavi, Iniesta?', choices:['Lugano','Maradona','Xavi','Iniesta'], a:0},
+      {q:'Quem foi campeão mundial de clubes como jogador pelo São Paulo?', choices:['Müller','Cafu','Rogério Ceni','Raí'], a:0},
+      {q:'Qual jogador marcou gols importantes no Morumbi e depois jogou no futebol europeu?', choices:['Kaká','Raí','Careca','Müller'], a:0},
+      {q:'Qual técnico dirigiu o São Paulo na década de 1990 com sucesso internacional?', choices:['Telê Santana','Muricy Ramalho','Vágner Mancini','Cuca'], a:0},
+      {q:'Qual é o apelido do estádio do São Paulo (Morumbi)?', choices:['Estádio Cícero Pompeu de Toledo','Arena do Tricolor','Casa dos Gaviões','Templo do Futebol'], a:0},
+      {q:'Quem fez parte do famoso trio de ataque nos anos 80/90: Careca, Müller e quem?', choices:['Toninho Cerezo','Raí','Palhinha','Almir'], a:2},
+      {q:'Qual desses jogadores atuou como ídolo e técnico posteriormente no clube?', choices:['Rogério Ceni','Pelé','Maradona','Zico'], a:0},
+      {q:'Quantas vezes o São Paulo venceu o Campeonato Brasileiro nos anos 2000 (até 2010)?', choices:['1','2','3','4'], a:0},
+      {q:'Quem foi destaque como zagueiro no São Paulo nos anos 1990?', choices:['Adilson','Neto','Oscar','Toninho'], a:0},
+      {q:'Qual jogador são-paulino foi eleito melhor do mundo (Bola de Ouro/Prêmio FIFA)?', choices:['Kaká','Ronaldo','Rivaldo','Ronaldinho'], a:0},
+      {q:'Quem foi o autor de gols memoráveis nas finais de Libertadores do São Paulo?', choices:['Luis Fabiano','Mineiro','Palhinha','Müller'], a:1},
+      {q:'Qual desses jogadores marcou um gol famoso de bicicleta pelo São Paulo?', choices:['Oscár','Müller','Careca','Kaká'], a:1},
+      {q:'Qual é o lema histórico do clube que aparece em bandeiras e cânticos?', choices:['Nossa Glória','Tri, Tri, Tri','SPFC Sempre','Orgulho Tricolor'], a:3},
+      {q:'Quem foi o treinador do São Paulo quando conquistou o tricampeonato paulista (anos 2005/2006/2007)?', choices:['Muricy Ramalho','Telê Santana','Paulo Autuori','Diego Aguirre'], a:0},
+      {q:'Em que competição o São Paulo enfrentou o Barcelona (amistoso histórico)?', choices:['Copa Libertadores','Amistoso Internacional','Mundial de Clubes','Recopa'], a:1},
+      {q:'Qual desses jogadores atuou como atacante e é conhecido como "o Fenômeno"? (não do SP)', choices:['Ronaldo','Careca','Luis Fabiano','Müller'], a:0},
+      {q:'Qual desses anos marcou uma grande reforma no Morumbi?', choices:['1970','1990','2000','2010'], a:1},
+      {q:'Quem foi atleta e depois diretor no São Paulo?', choices:['Raí','Cafu','Pelé','Kaká'], a:0},
+      {q:'Qual adjetivo a torcida usa para definir o São Paulo nos hinos?', choices:['Eterno','Grande','Imortal','Tricolor'], a:3},
+      {q:'Qual desses foi um clássico contra o São Paulo na década de 80?', choices:['Choque-Rei','Clássico Alvinegro','San-São','Gre-Nal'], a:2},
+      {q:'Qual camisa ficou associada a Luis Fabiano no São Paulo?', choices:['9','11','7','5'], a:0},
+      {q:'Quem foi o artilheiro da Libertadores de 2005 pelo São Paulo?', choices:['Luis Fabiano','Mineiro','Grafite','Rogério Ceni'], a:0},
+      {q:'Qual jogador marcou gols e também foi ídolo em outros clubes além do São Paulo?', choices:['Rivaldo','Cafu','Raí','Kaká'], a:3},
+      {q:'Qual desses atletas foi famoso pelas cobranças de falta no clube?', choices:['Raí','Rogério Ceni','Denilson','Hernanes'], a:0},
+      {q:'Qual foi o primeiro título internacional do São Paulo na era moderna?', choices:['Libertadores 1992','Recopa 1993','Copa Conmebol','Supercopa Sulamericana'], a:0},
+      {q:'O São Paulo já teve rivalidade forte com qual clube de Minas em decisões nacionais?', choices:['Atlético-MG','Cruzeiro','América-MG','Tupi'], a:1},
+      {q:'Qual desses treinadores estrangeiros já dirigiu o São Paulo?', choices:['Muricy Ramalho','Vladimir Petković','Marco van Basten','Nelsinho Baptista'], a:3},
+      {q:'Qual destes números foi usado por Telê Santana como símbolo de sua filosofia?', choices:['4-4-2','3-5-2','4-3-3','5-3-2'], a:2},
+      {q:'Qual é o apelido dado à torcida organizada do São Paulo chamada Gaviões da Fiel? (correto é rival)', choices:['Gaviões da Fiel','Torcida Tricolor Independente','São Paulinos Unidos','Força Tricolor'], a:1},
+      {q:'Quem foi o técnico campeão brasileiro em 2008?', choices:['Muricy Ramalho','Telê Santana','Paulo Autuori','Cuca'], a:0},
+      {q:'Qual jogador marcou gols pelo São Paulo e depois se tornou comentarista famoso?', choices:['Müller','Raí','Kaká','Careca'], a:0},
+      {q:'Qual desses jogadores foi destaque no tricampeonato paulista do meio dos anos 2000?', choices:['Hernanes','Rogério Ceni','Müller','Kléberson'], a:0},
+      {q:'Qual foi o principal artilheiro do São Paulo na temporada de 2010?', choices:['Luis Fabiano','Dagoberto','Rogério Ceni','Dagoberto (era destaque)'], a:1},
+      {q:'Qual jogador foi vendido ao Real Madrid após brilhar no São Paulo?', choices:['Kaká','Luis Fabiano','Rogério Ceni','Müller'], a:0},
+      {q:'Qual desses títulos estaduais o São Paulo disputa?', choices:['Campeonato Paulista','Campeonato Carioca','Campeonato Mineiro','Campeonato Gaúcho'], a:0},
+      {q:'Qual rival paulista tem o clássico chamado Choque-Rei com o São Paulo?', choices:['Palmeiras','Santos','Corinthians','Ponte Preta'], a:0},
+      {q:'Quem foi goleiro reserva famoso que depois ganhou destaque no clube?', choices:['Diego Cavalieri','Rogério Ceni','Rogerio Alves','Prass'], a:0},
+      {q:'Qual jogador foi ídolo com grandes defesas e muitos títulos no início dos anos 2000?', choices:['Rogério Ceni','Diego Lugano','Aldair','Ceni'], a:0},
+      {q:'Qual foi a maior venda de um jogador revelado pelo São Paulo (valor alto)?', choices:['Kaká','Rogério Ceni','Müller','Luis Fabiano'], a:0},
+      {q:'Qual ano marca a conquista da Libertadores, Mundial e Brasileiro por jogadores da geração 90/00?', choices:['1993 e 2005','1992 e 2005','2000 e 2005','1990 e 2000'], a:1},
+      {q:'Quem foi campeão e também capitão em títulos importantes do clube?', choices:['Rogério Ceni','Kaká','Raí','Müller'], a:0},
+      {q:'Qual jogador se destacou como volante e foi vendido ao futebol europeu após boas temporadas?', choices:['Hernanes','Edmílson','Ailton','Luizão'], a:0},
+      {q:'Qual time paulista tem maior rivalidade estadual com o São Paulo por títulos?', choices:['Palmeiras','Corinthians','Santos','Ponte Preta'], a:0},
+      {q:'Quem marcou gols decisivos na final do Brasileiro 2006 pelo São Paulo?', choices:['Lúcio','Luis Fabiano','Rogério Ceni','Müller'], a:1},
+      {q:'Qual desses atletas também foi dirigente no clube anos depois?', choices:['Raí','Kaká','Careca','Rivaldo'], a:0},
+      {q:'Qual técnico estrangeiro teve passagem curta e menos vitoriosa no São Paulo?', choices:['Carlo Ancelotti','Muricy Ramalho','Diego Aguirre','Ramón Díaz'], a:3},
+      {q:'Qual jogador levantou a taça de campeão brasileiro com o São Paulo em 2006?', choices:['Rogério Ceni','Luis Fabiano','Müller','Dagoberto'], a:0},
+      {q:'Qual camisa costuma ser usada pelo meia armado pelo time (tradicionalmente)?', choices:['10','8','7','11'], a:0},
+      {q:'Quem foi ídolo e técnico campeão pelo clube nos anos 2010 (breve passagem)?', choices:['Rogério Ceni','Muricy Ramalho','Telê Santana','Levir Culpi'], a:0},
+      {q:'Qual jogador marcou gols de falta memoráveis na história do clube?', choices:['Raí','Rogério Ceni','Hernanes','Denilson'], a:0},
+      {q:'Qual desses foi campeão pelo São Paulo e depois jogou na Europa com destaque?', choices:['Kaká','Müller','Moisés','Rodrigo'], a:0},
+      {q:'Quem foi destaque em defesa e liderança no elenco nos anos 2000?', choices:['Dé Santana','Diego Lugano','Adriano','Dentinho'], a:1},
+      {q:'Qual atacante com faro de gol marcou muitos pela equipe nas décadas 2000/2010?', choices:['Luis Fabiano','Müller','Careca','Toninho'], a:0},
+      {q:'Qual desses jogadores também fez carreira como auxiliar ou treinador no clube?', choices:['Rogério Ceni','Kaká','Raí','Müller'], a:0},
+      {q:'Quem é lembrado por sua cobrança de faltas e elegância técnica nos anos 90?', choices:['Raí','Müller','Careca','Rivaldo'], a:0},
+      {q:'Qual camisa é tradicionalmente do goleiro no SPFC?', choices:['1','9','10','7'], a:0},
+      {q:'Qual desses jogadores não foi ídolo do São Paulo?', choices:['Messi','Rogério Ceni','Raí','Kaká'], a:0},
+      {q:'Quantas Libertadores o São Paulo ganhou na década de 1990?', choices:['1','2','0','3'], a:0},
+      {q:'Quem fez parte do time de 1992 campeão da Libertadores?', choices:['Raí','Rogério Ceni','Kaká','Luis Fabiano'], a:0},
+      {q:'Qual desses foi um zagueiro de destaque no clube nos anos 2000?', choices:['Alex','Lucão','Toloi','Maldini'], a:0},
+      {q:'Qual jogador virou símbolo do clube e também autor de gols de falta e pênalti?', choices:['Rogério Ceni','Raí','Kaká','Denílson'], a:0},
+      {q:'Qual desses ex-jogadores trabalhou como comentarista após se aposentar?', choices:['Müller','Raí','Kaká','Rogério Ceni'], a:0}
+    ];
+
+    // simples verificação: garantir 100 perguntas
+    if(questions.length<100){
+      // preencher repetindo com variações simples caso faltem
+      const baseCount = questions.length;
+      for(let i=baseCount;i<100;i++){
+        questions.push({q:`Pergunta extra sobre São Paulo #${i+1}`, choices:['Opção A','Opção B','Opção C','Opção D'], a:0});
+      }
+    }
+
+    let idx = 0; let score = 0; let answered = false;
+    const qEl = document.getElementById('question');
+    const choicesEl = document.getElementById('choices');
+    const qNumEl = document.getElementById('qNum');
+    const scoreEl = document.getElementById('score');
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+
+    function render(){
+      const item = questions[idx];
+      qNumEl.textContent = (idx+1).toString();
+      qEl.textContent = item.q;
+      choicesEl.innerHTML = '';
+      item.choices.forEach((c,i)=>{
+        const d = document.createElement('div');
+        d.className = 'choice';
+        d.textContent = c;
+        d.onclick = ()=> select(i,d);
+        choicesEl.appendChild(d);
+      });
+      answered = false;
+    }
+
+    function select(choiceIndex, el){
+      if(answered) return;
+      answered = true;
+      const correctIndex = questions[idx].a;
+      const children = choicesEl.querySelectorAll('.choice');
+      children.forEach((ch, i)=>{
+        ch.classList.remove('correct','wrong');
+        if(i===correctIndex) ch.classList.add('correct');
+        if(i===choiceIndex && i!==correctIndex) ch.classList.add('wrong');
+      });
+      if(choiceIndex===correctIndex){ score += 10; scoreEl.textContent = score; }
+    }
+
+    btnNext.addEventListener('click', ()=>{
+      idx = (idx+1) % questions.length; render();
+    });
+    btnPrev.addEventListener('click', ()=>{ idx = (idx-1+questions.length) % questions.length; render(); });
+
+    // toque em tela para avançar (opcional)
+    document.addEventListener('keydown', (e)=>{ if(e.key==='ArrowRight') btnNext.click(); if(e.key==='ArrowLeft') btnPrev.click(); });
+
+    render();
+  </script>
+</body>
+</html>    padding: 25px 30px;
     box-shadow: 0 8px 20px var(--shadow);
     margin-top: 30px;
     backdrop-filter: blur(10px);

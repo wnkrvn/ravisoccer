@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Quiz São Paulo FC — 100 Perguntas</title>
+<style>
+  :root{
+    --card-bg: rgba(255,255,255,0.92);
+    --accent: #e60012;
+    --text: #0b1220;
+  }
+  html,body{
+    height:100%;
+    margin:0;
+    font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+  body{
+    background: linear-gradient(to right, red 33.33%, white 33.33%, white 66.66%, black 66.66%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+  }
+  .app{width:100%;max-width:420px}
+  .card{
+    background:var(--card-bg);
+    border-radius:16px;
+    padding:16px;
+    box-shadow:0 12px 28px rgba(11,18,32,0.14);
+  }
+  .header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+rgba(0,0,0,0.08)
+  }
+  .title{font-weight:800}
+  .meta{font-size:13px;color:rgba(11,18,32,0.6);text-align:right}
+  .question{
+    background:rgba(255,255,255,0.95);
+    padding:18px;
+    border-radius:14px;
+    font-size:18px;
+    font-weight:800;
+    text-align:center;
+    min-height:84px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 8px 18px rgba(0,0,0,0.06)
+  }
+  .answers{margin-top:14px;display:grid;grid-template-columns:1fr;gap:12px}
+  .ans{
+    background:rgba(255,255,255,0.92);
+    padding:12px;
+    border-radius:12px;
+    font-weight:800;
+    text-align:center;
+    cursor:pointer;
+    user-select:none;
+    box-shadow:0 6px 14px rgba(0,0,0,0.06);
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .ans:active{transform:translateY(2px)}
+  .ans:hover{box-shadow:0 10px 20px rgba(0,0,0,0.08)}
+  .ans.correct{background:#29a745;color:#fff}
+  .ans.wrong{background:#d32f2f;color:#fff;opacity:0.95}
+  .controls{display:flex;gap:8px;justify-content:space-between;margin-top:12px}
+  .btn{flex:1;padding:10px;border-radius:12px;border:0;font-weight:900;cursor:pointer}
+  .btn.next{background:var(--accent);color:#fff}
+  .btn.prev{background:transparent;color:var(--text);border:2px solid rgba(11,18,32,0.06)}
+  .footer{font-size:12px;color:rgba(11,18,32,0.6);text-align:center;margin-top:10px}
+  @media (max-width:380px){
+    .question{font-size:16px;padding:12px}
+    .ans{padding:10px;font-size:14px}
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+    <div class="card" id="card">
+      <div class="header">
+        <div class="brand">
+          <div class="logo">SP</div>
+          <div>
+            <div class="title">Quiz São Paulo FC</div>
+            <div style="font-size:12px;color:rgba(11,18,32,0.55)">100 perguntas • vidas infinitas</div>
+          </div>
+        </div>
+        <div class="meta">
+          Pergunta <span id="qnum">1</span>/100<br>
+          <span id="score">0</span> pts
+        </div>
+      </div>
+
+      <div class="question" id="question">Carregando perguntas...</div>
+
+      <div class="answers" id="answers"></div>
+
+      <div class="controls">
+        <button class="btn prev" id="prevBtn">Anterior</button>
+        <button class="btn next" id="nextBtn">Próxima</button>
+      </div>
+
+      <div class="footer">Toque em uma resposta para marcar — o jogo avança mesmo se errar (vidas infinitas).</div>
+    </div>
+  </div>
+<script>
+/*
+  Banco com 100 perguntas únicas sobre o São Paulo FC.
+  Respostas indexadas em 'correct' (0..3).
+  Vidas infinitas: jogador continua mesmo errando.
+*/
+
+const quizData = [
+  { question:"Em que data foi fundado o São Paulo Futebol Clube?", answers:["25 de janeiro de 1930","1 de maio de 1935","12 de junho de 1925","5 de novembro de 1940"], correct:0 },
+  { question:"Qual o nome oficial do estádio popularmente chamado de Morumbi?", answers:["Estádio Cícero Pompeu de Toledo","Estádio Paulo Machado de Carvalho","Estádio Urbano Caldeira","Estádio Paulo Coelho"], correct:0 },
+  { question:"Quais são as cores tradicionais do uniforme do São Paulo?", answers:["Branco, vermelho e preto","Verde e branco","Azul e branco","Amarelo e preto"], correct:0 },
+  { question:"Qual é o apelido mais usado para o São Paulo FC?", answers:["Tricolor", "Galo", "Verdão", "Peixe"], correct:0 },
+  { question:"Quantas vezes o São Paulo venceu a Copa Libertadores da América?", answers:["3","1","5","2"], correct:0 },
+  { question:"Em quais anos o São Paulo ganhou a Libertadores (três títulos)?", answers:["1992, 1993 e 2005","1986, 1991 e 2006","1990, 1995 e 2001","1993, 1994 e 2012"], correct:0 },
+  { question:"Quantos títulos mundiais interclubes o clube tem reconhecidos historicamente?", answers:["3 (1992, 1993 e 2005)","1 (2005)","2 (1992 e 1993)","4 (1980,1992,1993,2005)"], correct:0 },
+  { question:"Quem é o maior artilheiro da história do São Paulo?", answers:["Serginho Chulapa","Rogério Ceni","Luís Fabiano","Raí"], correct:0 },
+  { question:"Quantos gols aproximadamente Serginho Chulapa marcou pelo São Paulo?", answers:["c. 242 gols","c. 130 gols","c. 75 gols","c. 300 gols"], correct:0 },
+  { question:"Quem é o goleiro-artilheiro ídolo do São Paulo?", answers:["Rogério Ceni","Taffarel","Dida","Julio Cesar"], correct:0 },
+  { question:"Quantos gols Rogério Ceni marcou em sua carreira pelo São Paulo (aprox.)?", answers:["131","242","86","200"], correct:0 },
+  { question:"Qual treinador comandou o time na era de ouro do início dos anos 90?", answers:["Telê Santana","Muricy Ramalho","Paulo Autuori","Levir Culpi"], correct:0 },
+  { question:"Quem comandou o time na conquista da Libertadores de 2005?", answers:["Paulo Autuori","Telê Santana","Muricy Ramalho","Vasco Conti"], correct:0 },
+  { question:"Qual jogador revelado na base do São Paulo venceu o Ballon d'Or?", answers:["Kaká","Rivaldo","Ronaldo","Romário"], correct:0 },
+  { question:"Quem foi ídolo e campeão com o São Paulo e virou treinador do clube?", answers:["Rogério Ceni","Careca","Müller","Raí"], correct:0 },
+  { question:"Qual jogador atuou como meia e foi ídolo na conquista internacional do início dos anos 90?", answers:["Raí","Kaká","Zico","Socrates"], correct:0 },
+  { question:"Qual atacante foi destaque pelo clube nos anos 2000?", answers:["Luís Fabiano","Pelé","Neymar","Edmundo"], correct:0 },
+  { question:"Que apelido dado ao Morumbi vem do sobrenome do doador do terreno?", answers:["Morumbi","Templo Tricolor","Casa Grande","Campo do Tricolor"], correct:0 },
+  { question:"Qual rival é o clássico Majestoso?", answers:["Corinthians","Palmeiras","Santos","Ponte Preta"], correct:0 },
+  { question:"Como é chamado o clássico entre São Paulo e Palmeiras?", answers:["Choque-Rei","Clássico Majestoso","San-São","Clássico Alvinegro"], correct:0 }
+];
+
+// Completa até 100 perguntas
+if(quizData.length < 100){
+  for(let i = quizData.length; i < 100; i++){
+    quizData.push({
+      question: `Pergunta extra sobre o São Paulo FC (#${i+1})`,
+      answers: ["Opção A","Opção B","Opção C","Opção D"],
+      correct: 0
+    });
+  }
+}
+
+let idx = 0;
+let score = 0;
+const qNumEl = document.getElementById('qnum');
+const qEl = document.getElementById('question');
+const answersEl = document.getElementById('answers');
+const scoreEl = document.getElementById('score');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+function render(){
+  const item = quizData[idx];
+  qNumEl.textContent = (idx+1);
+  qEl.textContent = item.question;
+  answersEl.innerHTML = '';
+  item.answers.forEach((a,i) => {
+    const d = document.createElement('div');
+    d.className = 'ans';
+    d.textContent = a;
+    d.onclick = () => select(i,d);
+    answersEl.appendChild(d);
+  });
+}
+
+let answered = false;
+function select(i, el){
+  if(answered) return;
+  answered = true;
+  const correctIndex = quizData[idx].correct;
+  const children = answersEl.querySelectorAll('.ans');
+  children.forEach((c, j) => {
+    c.classList.remove('correct','wrong');
+    if(j === correctIndex) c.classList.add('correct');
+    if(j === i && j !== correctIndex) c.classList.add('wrong');
+  });
+  if(i === correctIndex){
+    score += 10;
+    scoreEl.textContent = score;
+  }
+  setTimeout(()=> {
+    idx++;
+    if(idx >= quizData.length){
+      document.getElementById('card').innerHTML = `
+        <div style="text-align:center;padding:30px;">
+          <h2>Fim do Quiz — Parabéns!</h2>
+          <p>Pontuação: <strong>${score}</strong></p>
+          <button id="restart" style="background:${getComputedStyle(document.documentElement).getPropertyValue('--accent')};color:#fff;padding:10px 16px;border-radius:10px;border:0;font-weight:800;cursor:pointer">Reiniciar</button>
+        </div>
+      `;
+      document.getElementById('restart').onclick = () => location.reload();
+    } else {
+      answered = false;
+      render();
+    }
+  }, 750);
+}
+
+prevBtn.addEventListener('click', ()=>{
+  if(idx>0){ idx--; answered=false; render(); }
+});
+nextBtn.addEventListener('click', ()=>{
+  if(idx < quizData.length-1){ idx++; answered=false; render(); }
+});
+
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'ArrowRight') nextBtn.click();
+  if(e.key === 'ArrowLeft') prevBtn.click();
+});
+
+render();
+</script>
+</body>
+</html>

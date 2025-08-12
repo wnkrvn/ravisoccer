@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jogo São Paulo FC</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(45deg, red, white, black);
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+    
+    .question-container {
+      background-color: white;
+      border-radius: 20px;
+      padding: 20px;
+      width: 90%;
+      max-width: 400px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      color: #000;
+    }
+    
+    .button {
+      background-color: red;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 10px;
+      margin: 5px 0;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+    }
+    
+    .button:hover {
+      opacity: 0.8;
+    }
+    
+    @media (max-width: 400px) {
+      .button {
+        font-size: 14px;
+      }
+    }
+    
+    .correct {
+      background-color: green;
+    }
+    
+    .incorrect {
+      background-color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="question-container">
+    <div id="question">Pergunta aqui</div>
+    <button class="button" id="optionA"></button>
+    <button class="button" id="optionB"></button>
+    <button class="button" id="optionC"></button>
+    <button class="button" id="optionD"></button>
+  </div>
+  <script>
+    const questions = [
+      {
+        question: "Qual é o estádio do São Paulo FC?",
+        answers: {
+          a: "A) Mineirão",
+          b: "B) Maracanã",
+          c: "C) Morumbi",
+          d: "D) Pacaembu"
+        },
+        correct: "c"
+      },
+      {
+        question: "Quantas Libertadores o São Paulo FC conquistou?",
+        answers: {
+          a: "A) 2",
+          b: "B) 3",
+          c: "C) 5",
+          d: "D) 1"
+        },
+        correct: "b"
+      },
+      {
+        question: "Quem é o maior artilheiro da história do São Paulo FC?",
+        answers: {
+          a: "A) Rogério Ceni",
+          b: "B) Müller",
+          c: "C) Careca",
+          d: "D) Vagner Love"
+        },
+        correct: "b"
+      },
+      {
+        question: "Qual é o nome do técnico que conquistou a Libertadores em 2005?",
+        answers: {
+          a: "A) Muricy Ramalho",
+          b: "B) Paulo Autuori",
+          c: "C) Levir Culpi",
+          d: "D) Telê Santana"
+        },
+        correct: "b"
+      },
+      {
+        question: "Qual é o nome do maior rival do São Paulo FC?",
+        answers: {
+          a: "A) Corinthians",
+          b: "B) Palmeiras",
+          c: "C) Santos",
+          d: "D) Flamengo"
+        },
+        correct: "a"
+      },
+      {
+        question: "Quantas vezes o São Paulo FC foi campeão brasileiro?",
+        answers: {
+          a: "A) 5",
+          b: "B) 6",
+          c: "C) 3",
+          d: "D) 2"
+        },
+        correct: "b"
+      },
+      {
+        question: "Quem é o goleiro com mais jogos pelo São Paulo FC?",
+        answers: {
+          a: "A) Rogério Ceni",
+          b: "B) Zetti",
+          c: "C) Gilmar",
+          d: "D) Denis"
+        },
+        correct: "a"
+      },
+      {
+        question: "Qual é o nome do estádio onde o São Paulo FC joga seus jogos?",
+        answers: {
+          a: "A) Morumbi",
+          b: "B) Pacaembu",
+          c: "C) Allianz Parque",
+          d: "D) Mineirão"
+        },
+        correct: "a"

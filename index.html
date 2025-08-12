@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Quiz São Paulo FC</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
+  body {
+    margin: 0;
+    font-family: 'Orbitron', sans-serif;
+    height: 100vh;
+    background: linear-gradient(
+      to right,
+      #e60012 33.33%,
+      #fff 33.33%,
+      #fff 66.66%,
+      #000 66.66%
+    );
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+  }
+  #quiz-container {
+    background: #000000dd;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    padding: 30px 25px 40px 25px;
+    box-sizing: border-box;
+    text-align: center;
+    position: relative;
+  }
+  #start-btn {
+    font-size: 28px;
+    background: #ffdb4d;
+    color: #000;
+    border: none;
+    padding: 16px 40px;
+    font-weight: bold;
+    border-radius: 14px;
+    cursor: pointer;
+    box-shadow: 0 6px 8px rgba(0,0,0,0.3);
+    transition: background 0.3s ease;
+  }
+  #start-btn:hover {
+    background: #ffd633;
+  }
+  #timer {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    font-size: 20px;
+    background: #222;
+    padding: 7px 14px;
+    border-radius: 10px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    display: none;
+  }
+  #progress-bar {
+    height: 12px;
+    background: #ffcccc;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 25px;
+    display: none;
+  }
+  #progress {
+    height: 100%;
+    background: #ffdb4d;
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+  #question-number {
+    font-size: 18px;
+    margin-bottom: 8px;
+    font-weight: bold;
+    display: none;
+  }
+  #question {
+    font-size: 26px;
+    margin-bottom: 25px;
+    min-height: 85px;
+    display: none;
+  }
+  .option-btn {
+    background: white;
+    color: #e60012;
+    border: none;
+    padding: 14px 20px;
+    margin: 10px 0;
+    width: 100%;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+    display: none;
+  }
+  .option-btn:hover:not(:disabled) {
+    background: #ffcccc;
+  }
+  .option-btn:disabled {
+    cursor: default;
+    opacity: 0.8;
+  }
+  #feedback {
+    margin-top: 25px;
+    font-size: 22px;
+    font-weight: bold;
+    min-height: 35px;
+    height: 35px;
+    display: none;
+  }
+  #next-btn {
+    margin-top: 30px;
+    background: #ffdb4d;
+    color: #000;
+    border: none;
+    padding: 14px 32px;
+    font-size: 22px;
+    font-weight: bold;
+    border-radius: 12px;
+    cursor: pointer;
+    display: none;
+    box-shadow: 0 6px 8px rgba(0,0,0,0.3);
+  }
+  #score-container {
+    font-size: 32px;
+    font-weight: 900;
+    margin-top: 30px;
+    display: none;
+  }
+  #restart-btn {
+    margin-top: 25px;
+    background: white;
+    color: #e60012;
+    border: none;
+    padding: 14px 30px;
+    font-size: 22px;
+    font-weight: bold;
+    border-radius: 12px;
+    cursor: pointer;
+    display: none;
+    box-shadow: 0 6px 8px rgba(0,0,0,0.3);
+  }
+  @media (max-width: 400px) {
+    #quiz-container {
+      padding: 20px 15px 30px 15px;
+    }
+    #question {
+      font-size: 22px;
+    }
+    .option-btn {
+      font-size: 18px;
+      padding: 12px 16px;
+    }
+    #next-btn, #restart-btn {
+      font-size: 20px;
+      padding: 12px 24px;
+    }
+    #start-btn {
+      font-size: 24px;
+      padding: 14px 32px;
+    }
+  }
+</style>
+</head>
+<body>
+  <div id="quiz-container">
+    <button id="start-btn">Começar Quiz São Paulo FC</button>
+    <div id="timer">15s</div>
+    <div id="progress-bar"><div id="progress"></div></div>
+    <div id="question-number"></div>
+    <div id="question"></div>
+    <div id="options"></div>
+    <div id="feedback"></div>
+    <button id="next-btn">Próxima</button>
+    <div id="score-container"></div>
+    <button id="restart-btn">Recomeçar Quiz</button>
+  </div>
+
+<script>
+  const quizData = [
+    {
+      question: "Em que ano o São Paulo FC foi fundado?",
+      options: ["1930", "1935", "1932", "1929"],
+      answer: "1930"
+    },
+    {
+      question: "Qual é o estádio oficial do São Paulo FC?",
+      options: ["Morumbi", "Pacaembu", "Allianz Parque", "Maracanã"],
+      answer: "Morumbi"
+    },
+    {
+      question: "Quantas vezes o São Paulo FC ganhou a Copa Libertadores da América?",
+      options: ["2", "3", "4", "5"],
+      answer: "3"
+    },
+    {
+      question: "Quem é o maior artilheiro da história do São Paulo?",
+      options: ["Rogério Ceni", "Luis Fabiano", "Careca", "Telê Santana"],
+      answer: "Luis Fabiano"
+    },
+    {
+      question: "Qual é o apelido do São Paulo FC?",
+      options: ["Tricolor", "Furacão", "Leão", "Galo"],
+      answer: "Tricolor"
+    },
+    {
+      question: "Quem foi o técnico do São Paulo na conquista do Mundial de Clubes em 2005?",
+      options: ["Muricy Ramalho", "Telê Santana", "Paulo Autuori", "Lugano"],
+      answer: "Paulo Autuori"
+    },
+    {
+      question: "Qual jogador ficou famoso por ser goleiro e também cobrar pênaltis no São Paulo?",
+      options: ["Rogério Ceni", "Zetti", "Fabio", "Ceni Maradona"],
+      answer: "Rogério Ceni"
+    },
+    {
+      question: "Qual a cor da camisa reserva tradicional do São Paulo?",
+      options: ["Branca", "Vermelha", "Preta", "Azul"],
+      answer: "Branca"
+    },
+    {
+      question: "Quantos títulos brasileiros (Brasileirão) o São Paulo possui?",
+      options: ["4", "5", "6", "7"],
+      answer: "6"
+    },
+    {
+      question: "Qual o nome do mascote do São Paulo FC?",
+      options: ["Santo Paulo", "São Paulino", "São Paulinho", "São Paulo"],
+      answer: "São Paulino"
+    },
+    {
+      question: "Quem foi o maior artilheiro na Libertadores de 2012 pelo São Paulo?",
+      options: ["Lucas Moura", "Dagoberto", "Luis Fabiano", "Rogério Ceni"],
+      answer: "Luis Fabiano"
+    },
+    {
+      question: "Quantas estrelas compõem o escudo do São Paulo FC?",
+      options: ["5", "6", "7", "8"],
+      answer: "6"
+    },
+    {
+      question: "Quem é conhecido como o maior ídolo e goleiro-craque do São Paulo?",
+      options: ["Zetti", "Rogério Ceni", "Ceni Maradona", "Fabio"],
+      answer: "Rogério Ceni"
+    },
+    {
+      question: "Qual é a principal cor do uniforme do São Paulo FC?",
+      options: ["Vermelho", "Branco", "Preto", "Azul"],
+      answer: "Branco"
+    },
+    {
+      question: "Quem foi o técnico do São Paulo na era do 'Tricampeonato Mundial'?",
+      options: ["Muricy Ramalho", "Telê Santana", "Paulo Autuori", "Lugano"],
+      answer: "Telê Santana"
+    },
+    {
+      question: "Em que ano o São Paulo conquistou seu primeiro título brasileiro?",
+      options: ["1977", "1986", "1991", "2006"],
+      answer: "1977"
+    },
+    {
+      question: "Qual jogador são-paulino é conhecido como 'Raí'?",
+      options: ["Raí Souza Vieira de Oliveira", "Rogério Ceni", "Luis Fabiano", "Careca"],
+      answer: "Raí Souza Vieira de Oliveira"
+    },
+    {
+      question: "Quantos gols Rogério Ceni marcou na carreira?",
+      options: ["100+", "90+", "120+", "130+"],
+      answer: "120+"
+    },
+    {
+      question: "Quem foi o primeiro presidente do São Paulo FC?",
+      options: ["Edgard de Souza Aranha", "Leco", "Carlos Miguel Aidar", "Juvenal Juvêncio"],
+      answer: "Edgard de Souza Aranha"
+    },
+    {
+      question: "Qual o nome completo do São Paulo FC?",
+      options: ["São Paulo Futebol Clube", "São Paulo Futebol e Regatas", "São Paulo Futebol Society", "São Paulo Futebol Profissional"],
+      answer: "São Paulo Futebol Clube"
+    }
+  ];
+
+  const startBtn = document.getElementById("start-btn");
+  const timerEl = document.getElementById("timer");
+  const progressBar = document.getElementById("progress");
+  const progressBarContainer = document.getElementById("progress-bar");
+  const questionNumberEl = document.getElementById("question-number");
+  const questionEl = document.getElementById("question");
+  const optionsEl = document.getElementById("options");
+  const feedbackEl = document.getElementById("feedback");
+  const nextBtn = document.getElementById("next-btn");
+  const scoreContainer = document.getElementById("score-container");
+  const restartBtn = document.getElementById("restart-btn");
+
+  let currentQuestionIndex = 0;
+  let score = 0;
+  let answered = false;
+  let timer;
+  let timeLeft = 15;
+
+  function showQuizElements() {
+    timerEl.style.display = "block";
+    progressBarContainer.style.display = "block";
+    questionNumberEl.style.display = "block";
+    questionEl.style.display = "block";
+    feedbackEl.style.display = "block";
+    nextBtn.style.display = "none";
+    scoreContainer.style.display = "none";
+    restartBtn.style.display = "none";
+
+    // mostrar todos os botões de opções
+    // (eles serão criados de novo a cada pergunta)
+  }
+
+  function startTimer() {
+    timeLeft = 15;
+    timerEl.textContent = `${timeLeft}s`;
+    timer = setInterval(() => {
+      timeLeft--;
+      timerEl.textContent = `${timeLeft}s`;
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        disableOptions();
+        feedbackEl.textContent = `Tempo esgotado! Resposta correta: ${quizData[currentQuestionIndex].answer}`;
+        playSound(false);
+        nextBtn.style.display = "inline-block";
+        answered = true;
+      }
+    }, 1000);
+  }
+
+  function stopTimer() {
+    clearInterval(timer);
+  }
+
+  function loadQuestion() {
+    answered = false;
+    feedbackEl.textContent = "";
+    nextBtn.style.display = "none";
+    scoreContainer.style.display = "none";
+    restartBtn.style.display = "none";
+
+    const currentQuestion = quizData[currentQuestionIndex];
+    questionNumberEl.textContent = `Pergunta ${currentQuestionIndex + 1} de ${quizData.length}`;
+    questionEl.textContent = currentQuestion.question;
+    optionsEl.innerHTML = "";
+
+    progressBar.style.width = `${((currentQuestionIndex) / quizData.length) * 100}%`;
+
+    currentQuestion.options.forEach(option => {
+      const button = document.createElement("button");
+      button.classList.add("option-btn");
+      button.textContent = option;
+      button.disabled = false;
+      button.style.display = "block";
+      button.addEventListener("click", () => selectOption(option, button));
+      optionsEl.appendChild(button);
+    });
+
+    startTimer();
+  }
+
+  function disableOptions() {
+    const buttons = document.querySelectorAll(".option-btn");
+    buttons.forEach(btn => btn.disabled = true);
+  }
+
+  // Sons simples base64 embutidos
+  const soundCorrect = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=");
+  const soundWrong = new Audio("data:audio/wav;base64,UklGRhIAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=");
+
+  function playSound(correct) {
+    if (correct) {
+      soundCorrect.play();
+    } else {
+      soundWrong.play();
+    }
+  }
+
+  function selectOption(selected, button) {
+    if (answered) return;
+    answered = true;
+    stopTimer();
+
+    const currentQuestion = quizData[currentQuestionIndex];
+    const buttons = document.querySelectorAll(".option-btn");
+
+    buttons.forEach(btn => {
+      btn.disabled = true;
+      if (btn.textContent === currentQuestion.answer) {
+        btn.style.backgroundColor = "#4CAF50"; // verde
+        btn.style.color = "white";
+      } else if (btn === button) {
+        btn.style.backgroundColor = "#f44336"; // vermelho
+        btn.style.color = "white";
+      }
+    });
+
+    if (selected === currentQuestion.answer) {
+      score++;
+      feedbackEl.textContent = "Resposta correta! 🎉";
+      playSound(true);
+    } else {
+      feedbackEl.textContent = `Resposta errada! A correta é: ${currentQuestion.answer}`;
+      playSound(false);
+    }
+
+    nextBtn.style.display = "inline-block";
+  }
+
+  nextBtn.addEventListener("click", () => {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < quizData.length) {
+      loadQuestion();
+    } else {
+      showScore();
+    }
+  });
+
+  function showScore() {
+    questionEl.style.display = "none";
+    optionsEl.innerHTML = "";
+    feedbackEl.textContent = "";
+    progressBar.style.width = "100%";
+    timerEl.style.display = "none";
+    questionNumberEl.style.display = "none";
+    scoreContainer.style.display = "block";
+    scoreContainer.textContent = `Você acertou ${score} de ${quizData.length} perguntas.`;
+    nextBtn.style.display = "none";

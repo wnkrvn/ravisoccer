@@ -1,421 +1,135 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Perguntados Empolgante - Esportes & Matemática</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
-
-  :root {
-    --bg1: #0d47a1;
-    --bg2: #1976d2;
-    --btn-bg: #ffca28;
-    --btn-hover: #ffc107;
-    --text-light: #fff;
-    --correct: #4caf50;
-    --wrong: #e53935;
-    --shadow: rgba(0, 0, 0, 0.3);
-  }
-
-  * {
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-  }
-
-  body {
-    margin: 0; min-height: 100vh;
-    background: linear-gradient(135deg, var(--bg1), var(--bg2));
-    color: var(--text-light);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 15px;
-    overflow-x: hidden;
-  }
-
-  h1 {
-    margin-top: 30px;
-    font-size: 2.8rem;
-    text-align: center;
-    text-shadow: 2px 2px 6px var(--shadow);
-    user-select: none;
-  }
-
-  #themeSelectSection, #gameSection {
-    width: 100%; max-width: 480px;
-    background: rgba(255 255 255 / 0.1);
-    border-radius: 20px;
-    padding: 25px 30px;
-    box-shadow: 0 8px 20px var(--shadow);
-    margin-top: 30px;
-    backdrop-filter: blur(10px);
-  }
-
-  #themeSelectSection {
-    display: flex; flex-direction: column; align-items: center; gap: 25px;
-  }
-
-  label {
-    font-size: 1.4rem;
-    user-select: none;
-  }
-
-  select, button {
-    width: 240px;
-    padding: 14px 20px;
-    font-size: 1.2rem;
-    border-radius: 12px;
-    border: none;
-    cursor: pointer;
-    user-select: none;
-    transition: background-color 0.3s ease, transform 0.15s ease;
-    font-weight: 600;
-  }
-
-  select {
-    background: var(--text-light);
-    color: #111;
-  }
-
-  select:focus {
-    outline: none;
-    box-shadow: 0 0 8px var(--btn-bg);
-  }
-
-  button {
-    background-color: var(--btn-bg);
-    color: #222;
-    font-weight: 700;
-    box-shadow: 0 6px 12px var(--shadow);
-  }
-
-  button:hover:not(:disabled) {
-    background-color: var(--btn-hover);
-    transform: scale(1.05);
-  }
-
-  button:disabled {
-    background-color: #aaa;
-    cursor: not-allowed;
-    box-shadow: none;
-    transform: none;
-  }
-
-  .stat-bar {
-    display: flex; justify-content: space-between;
-    margin-bottom: 20px;
-    font-size: 1.2rem;
-    user-select: none;
-  }
-
-  .question {
-    background: rgba(255 255 255 / 0.15);
-    padding: 20px;
-    border-radius: 20px;
-    font-weight: 700;
-    font-size: 1.5rem;
-    min-height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    text-shadow: 1px 1px 4px var(--shadow);
-    user-select: none;
-  }
-
-  .answers {
-    margin-top: 25px;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-  }
-
-  .answer {
-    background: rgba(255 255 255 / 0.3);
-    padding: 15px;
-    border-radius: 15px;
-    text-align: center;
-    cursor: pointer;
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #111;
-    user-select: none;
-    box-shadow: 0 4px 10px var(--shadow);
-    transition:
-      background-color 0.3s ease,
-      color 0.3s ease,
-      transform 0.15s ease;
-  }
-
-  .answer:hover:not(.correct):not(.wrong) {
-    background: var(--btn-bg);
-    color: #222;
-    transform: scale(1.03);
-  }
-
-  .answer.correct {
-    background-color: var(--correct);
-    color: white;
-    box-shadow: 0 0 15px var(--correct);
-  }
-
-  .answer.wrong {
-    background-color: var(--wrong);
-    color: white;
-    box-shadow: 0 0 15px var(--wrong);
-  }
-
-  .footer {
-    margin-top: 30px;
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .footer button {
-    flex: 1 1 140px;
-  }
-
-  @media (max-width: 400px) {
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Perguntados Empolgante - Esportes & Matemática</title>
+  <style>
+    @import url('https:                                                                   
+    :root {
+      --bg1:         
+      --bg2:         
+      --btn-bg:         
+      --btn-hover:         
+      --text-light:      
+      --correct:         
+      --wrong:         
+      --shadow: rgba(0, 0, 0, 0.3);
+    }
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      color: var(--text-light);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 15px;
+      overflow-x: hidden;
+    }
     h1 {
-      font-size: 2rem;
+      margin-top: 30px;
+      font-size: 2.8rem;
+      text-align: center;
+      text-shadow: 2px 2px 6px var(--shadow);
+      user-select: none;
+    }
+    #themeSelectSection, #gameSection {
+      width: 100%;
+      max-width: 480px;
+      background: rgba(255 255 255 / 0.1);
+      border-radius: 20px;
+      padding: 25px 30px;
+      box-shadow: 0 8px 20px var(--shadow);
+      margin-top: 30px;
+      backdrop-filter: blur(10px);
+    }
+    #themeSelectSection {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 25px;
+    }
+    label {
+      font-size: 1.4rem;
+      user-select: none;
     }
     select, button {
-      width: 100%;
+      width: 240px;
+      padding: 14px 20px;
+      font-size: 1.2rem;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s ease, transform 0.15s ease;
+      font-weight: 600;
     }
-  }
-</style>
-</head>
-<body>
-
-<h1>Perguntados Empolgante</h1>
-
-<section id="themeSelectSection" aria-label="Seleção de tema">
-  <label for="themeSelect">Escolha o tema para jogar:</label>
-  <select id="themeSelect" aria-required="true" aria-describedby="helpSelect">
-    <option value="" selected disabled>Selecione um tema</option>
-    <option value="esportes">Esportes</option>
-    <option value="matematica">Matemática</option>
-  </select>
-  <button id="startBtn" disabled aria-disabled="true">Começar</button>
-  <div id="helpSelect" style="color: #ffeb3b; font-weight: 600; margin-top:10px;">Escolha um tema para ativar o botão</div>
-</section>
-
-<section id="gameSection" class="hidden" aria-live="polite" aria-label="Jogo de perguntas">
-  <div class="stat-bar" aria-label="Informações do jogo">
-    <span>Fase: <b id="phase">1</b></span>
-    <span>Pontos: <b id="score">0</b></span>
-    <span>Vidas: <b id="lives">3</b></span>
-  </div>
-  <div class="question" id="questionText">Pergunta aparecerá aqui</div>
-  <div class="answers" id="answers" role="list"></div>
-  <div class="footer">
-    <button id="nextBtn" disabled>Próxima</button>
-    <button id="resetBtn">Reiniciar</button>
-    <button id="backBtn">Voltar ao Menu</button>
-  </div>
-</section>
-
-<!-- Música de fundo sem direitos autorais -->
-<audio id="bgMusic" src="https://cdn.pixabay.com/download/audio/2022/03/28/audio_f97c69b6c6.mp3?filename=happy-rock-ambient-10966.mp3" loop></audio>
-
-<script>
-(() => {
-  // Base de perguntas (10 por tema), replicadas pra 100
-  const questionsData = {
-    esportes: [
-      {q:"Quantos jogadores tem um time de futebol em campo?", a:["9","10","11","12"], correct:2},
-      {q:"Qual país sediou a Copa do Mundo FIFA 2014?", a:["Brasil","Alemanha","Argentina","Espanha"], correct:0},
-      {q:"Quem é conhecido como o 'Rei do Futebol'?", a:["Maradona","Pelé","Neymar","Cristiano Ronaldo"], correct:1},
-      {q:"Em que esporte é usada uma bola oval?", a:["Basquete","Futebol americano","Rugby","Handebol"], correct:2},
-      {q:"Quantos sets são disputados numa partida de tênis profissional (Grand Slam masculino)?", a:["3","5","7","9"], correct:1},
-      {q:"Qual país é famoso por sua tradição no sumô?", a:["China","Coreia do Sul","Japão","Mongólia"], correct:2},
-      {q:"Quantos minutos dura um tempo no futebol profissional?", a:["40","45","50","60"], correct:1},
-      {q:"Em qual esporte Michael Jordan é uma lenda?", a:["Basquete","Beisebol","Futebol","Tênis"], correct:0},
-      {q:"Qual é a maior prova do ciclismo mundial?", a:["Tour de France","Giro d'Italia","Vuelta a España","Olympics"], correct:0},
-      {q:"Qual país venceu a Copa do Mundo de Futebol feminino em 2019?", a:["Estados Unidos","Holanda","Alemanha","Japão"], correct:0},
-    ],
-    matematica: [
-      {q:"Quanto é 7 x 8?", a:["54","56","58","60"], correct:1},
-      {q:"Qual o resultado de 25 + 36?", a:["51","61","71","81"], correct:2},
-      {q:"Qual é a raiz quadrada de 144?", a:["10","11","12","13"], correct:2},
-      {q:"Quanto é 15% de 200?", a:["20","25","30","35"], correct:2},
-      {q:"Qual é o próximo número na sequência: 2, 4, 8, 16, ...?", a:["20","24","32","40"], correct:2},
-      {q:"Quanto é 100 dividido por 4?", a:["20","25","30","40"], correct:1},
-      {q:"Quantos lados tem um hexágono?", a:["5","6","7","8"], correct:1},
-      {q:"Quanto é 9²?", a:["81","72","90","99"], correct:0},
-      {q:"Qual é o valor de π (pi) arredondado a duas casas decimais?", a:["3.12","3.14","3.16","3.18"], correct:1},
-      {q:"Quanto é 2³?", a:["4","6","8","10"], correct:2},
-    ]
-  };
-
-  // Replicar até 100 perguntas (com shuffle)
-  function replicateQuestions(baseArray) {
-    const res = [];
-    while(res.length < 100) {
-      res.push(...baseArray);
+    select {
+      background: var(--text-light);
+      color: #111;
     }
-    return res.slice(0, 100);
-  }
-
-  // Shuffle Fisher-Yates
-  function shuffle(arr) {
-    for(let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random()*(i+1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
+    select:focus {
+      outline: none;
+      box-shadow: 0 0 8px var(--btn-bg);
     }
-    return arr;
-  }
-
-  // Variáveis UI
-  const themeSelectSection = document.getElementById('themeSelectSection');
-  const gameSection = document.getElementById('gameSection');
-  const themeSelect = document.getElementById('themeSelect');
-  const startBtn = document.getElementById('startBtn');
-  const questionText = document.getElementById('questionText');
-  const answersDiv = document.getElementById('answers');
-  const nextBtn = document.getElementById('nextBtn');
-  const resetBtn = document.getElementById('resetBtn');
-  const backBtn = document.getElementById('backBtn');
-  const phaseSpan = document.getElementById('phase');
-  const scoreSpan = document.getElementById('score');
-  const livesSpan = document.getElementById('lives');
-  const bgMusic = document.getElementById('bgMusic');
-
-  // Estado
-  let selectedTheme = null;
-  let questions = [];
-  let currentIndex = 0;
-  let score = 0;
-  let lives = 3;
-  let phase = 1;
-  let answered = false;
-
-  // Ativa botão começar só se tema selecionado
-  themeSelect.addEventListener('change', () => {
-    startBtn.disabled = themeSelect.value === "";
-  });
-
-  // Começar jogo
-  startBtn.addEventListener('click', () => {
-    selectedTheme = themeSelect.value;
-    if (!selectedTheme) return;
-    questions = selectedTheme === 'esportes' ? replicateQuestions(questionsData.esportes) : replicateQuestions(questionsData.matematica);
-    questions = shuffle(questions);
-    currentIndex = 0;
-    score = 0;
-    lives = 3;
-    phase = 1;
-    answered = false;
-    updateStats();
-    themeSelectSection.classList.add('hidden');
-    gameSection.classList.remove('hidden');
-    nextBtn.disabled = true;
-    renderQuestion();
-    // Toca a música de fundo
-    bgMusic.play().catch(() => {
-      // Música bloqueada pelo navegador, pode pedir interação
-      console.log('Interaja para ativar a música');
-    });
-  });
-
-  resetBtn.addEventListener('click', () => {
-    currentIndex = 0;
-    score = 0;
-    lives = 3;
-    phase = 1;
-    answered = false;
-    updateStats();
-    renderQuestion();
-    nextBtn.disabled = true;
-  });
-
-  backBtn.addEventListener('click', () => {
-    themeSelectSection.classList.remove('hidden');
-    gameSection.classList.add('hidden');
-    startBtn.disabled = true;
-    themeSelect.value = "";
-    bgMusic.pause();
-    bgMusic.currentTime = 0;
-  });
-
-  nextBtn.addEventListener('click', () => {
-    if (!answered) return;
-    currentIndex++;
-    if(currentIndex >= questions.length) {
-      alert(`Fim do jogo! Você fez ${score} pontos.`);
-      backBtn.click();
-      return;
+    button {
+      background-color: var(--btn-bg);
+      color: #222;
+      font-weight: 700;
+      box-shadow: 0 6px 12px var(--shadow);
     }
-    if(currentIndex > 0 && currentIndex % 10 === 0) {
-      phase++;
-      phaseSpan.textContent = phase;
-      alert(`Parabéns! Você avançou para a fase ${phase}!`);
+    button:hover:not(:disabled) {
+      background-color: var(--btn-hover);
+      transform: scale(1.05);
     }
-    answered = false;
-    updateStats();
-    renderQuestion();
-    nextBtn.disabled = true;
-  });
-
-  function updateStats() {
-    phaseSpan.textContent = phase;
-    scoreSpan.textContent = score;
-    livesSpan.textContent = lives;
-  }
-
-  function renderQuestion() {
-    clearAnswers();
-    const q = questions[currentIndex];
-    questionText.textContent = `(${currentIndex + 1}/${questions.length}) ${q.q}`;
-    q.a.forEach((ansText, i) => {
-      const btn = document.createElement('button');
-      btn.textContent = ansText;
-      btn.className = 'answer';
-      btn.setAttribute('role', 'listitem');
-      btn.addEventListener('click', () => selectAnswer(i));
-      answersDiv.appendChild(btn);
-    });
-  }
-
-  function clearAnswers() {
-    answersDiv.innerHTML = '';
-  }
-
-  function selectAnswer(index) {
-    if(answered) return;
-    answered = true;
-    const q = questions[currentIndex];
-    const buttons = answersDiv.querySelectorAll('button');
-    buttons.forEach((btn, i) => {
-      btn.disabled = true;
-      if(i === q.correct) {
-        btn.classList.add('correct');
-      }
-      if(i === index && i !== q.correct) {
-        btn.classList.add('wrong');
-      }
-    });
-
-    if(index === q.correct) {
-      score += 10;
-    } else {
-      lives--;
-      if(lives <= 0) {
-        alert(`Você perdeu todas as vidas! Pontuação final: ${score}`);
-        backBtn.click();
-        return;
-      }
+    button:disabled {
+      background-color: #aaa;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
     }
-    updateStats();
-    nextBtn.disabled = false;
-  }
-
-})();
-</script>
-
-</body>
-</html>
+    .stat-bar {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+      user-select: none;
+    }
+    .question {
+      background: rgba(255 255 255 / 0.15);
+      padding: 20px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 1.5rem;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      text-shadow: 1px 1px 4px var(--shadow);
+      user-select: none;
+    }
+    .answers {
+      margin-top: 25px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .answer {
+      background: rgba(255 255 255 / 0.3);
+      padding: 15px;
+      border-radius: 15px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 11.2rem;
+      font-weight: 600;
+      color: #111;
+      user-select: none;
+      box-shadow: 0 4px 10px var(--shadow);
+      transition: background-color 0.3s ease, color 0.3s ease,

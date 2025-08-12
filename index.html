@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <!-- ... -->
+</head>
+<body>
+  <!-- ... -->
+  <script>
+    // ...
+    const questionsData = {
+      esportes: [
+        // ...
+      ],
+      matematica: [
+        // ...
+      ]
+    };
+
+    // Função para embaralhar as perguntas
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // Variáveis UI
+    // ...
+
+    // Estado
+    let selectedTheme = null;
+    let questions = [];
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let lives = 3;
+    let phase = 1;
+    let answered = false;
+
+    // Começar jogo
+    startBtn.addEventListener('click', () => {
+      selectedTheme = themeSelect.value;
+      if (!selectedTheme) return;
+      const themeQuestions = selectedTheme === 'esportes' ? questionsData.esportes : questionsData.matematica;
+      questions = shuffle(themeQuestions).slice(0, 100); // Embaralha e pega as primeiras 100 perguntas
+      currentQuestionIndex = 0;
+      score = 0;
+      lives = 3;
+      phase = 1;
+      answered = false;
+      updateStats();
+      themeSelectSection.classList.add('hidden');
+      gameSection.classList.remove('hidden');
+      nextBtn.disabled = true;
+      renderQuestion();
+      // Toca a música de fundo
+      bgMusic.play().catch(() => {
+        // Música bloqueada pelo navegador, pode pedir interação
+        console.log('Interaja para ativar a música');
+      });
+    });
+
+    // ...
+
+    function renderQuestion() {
+      clearAnswers();
+      const q = questions[currentQuestionIndex];
+      questionText.textContent = `(${currentQuestionIndex + 1}/${questions.length}) ${q.q}`;
+      q.a.forEach((ansText, i) => {
+        const btn = document.createElement('button');
+        btn.textContent = ansText;
+        btn.className = 'answer';
+        btn.setAttribute('role', 'listitem');
+        btn.addEventListener('click', () => selectAnswer(i));
+        answersDiv.appendChild(btn);
+      });
+    }
+
+    nextBtn.addEventListener('click', () => {
+      if (!answered) return;
+      currentQuestionIndex++;
+      if (currentQuestionIndex >= phase * 10) {
+        if (phase < 10) {
+          phase++;
+          lives += 2; // Adiciona 2 vidas a cada fase
+          updateStats();
+          alert(`Parabéns! Você avançou para a fase ${phase}!`);
+        } else {
+          alert(`Fim do jogo! Você fez ${score} pontos.`);
+          backBtn.click();
+          return;
+        }
+      }
+      answered = false;
+      updateStats();
+      renderQuestion();
+      nextBtn.disabled = true;
+    });
+
+    // ...
+  </script>
+</body>
+</html>

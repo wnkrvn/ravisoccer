@@ -99,52 +99,33 @@
         },
         correct: "b"
       },
-      {
-        question: "Qual é o nome do técnico que conquistou a Libertadores em 2005?",
-        answers: {
-          a: "A) Muricy Ramalho",
-          b: "B) Paulo Autuori",
-          c: "C) Levir Culpi",
-          d: "D) Telê Santana"
-        },
-        correct: "b"
-      },
-      {
-        question: "Qual é o nome do maior rival do São Paulo FC?",
-        answers: {
-          a: "A) Corinthians",
-          b: "B) Palmeiras",
-          c: "C) Santos",
-          d: "D) Flamengo"
-        },
-        correct: "a"
-      },
-      {
-        question: "Quantas vezes o São Paulo FC foi campeão brasileiro?",
-        answers: {
-          a: "A) 5",
-          b: "B) 6",
-          c: "C) 3",
-          d: "D) 2"
-        },
-        correct: "b"
-      },
-      {
-        question: "Quem é o goleiro com mais jogos pelo São Paulo FC?",
-        answers: {
-          a: "A) Rogério Ceni",
-          b: "B) Zetti",
-          c: "C) Gilmar",
-          d: "D) Denis"
-        },
-        correct: "a"
-      },
-      {
-        question: "Qual é o nome do estádio onde o São Paulo FC joga seus jogos?",
-        answers: {
-          a: "A) Morumbi",
-          b: "B) Pacaembu",
-          c: "C) Allianz Parque",
-          d: "D) Mineirão"
-        },
-        correct: "a"
+      // Include more questions here...
+    ];
+    
+    let currentQuestionIndex = 0;
+    
+    function loadQuestion() {
+      const currentQuestion = questions[currentQuestionIndex];
+      document.getElementById("question").innerText = currentQuestion.question;
+      document.getElementById("optionA").innerText = currentQuestion.answers.a;
+      document.getElementById("optionB").innerText = currentQuestion.answers.b;
+      document.getElementById("optionC").innerText = currentQuestion.answers.c;
+      document.getElementById("optionD").innerText = currentQuestion.answers.d;
+      
+      // Reset button styles
+      document.getElementById("optionA").classList.remove("correct", "incorrect");
+      document.getElementById("optionB").classList.remove("correct", "incorrect");
+      document.getElementById("optionC").classList.remove("correct", "incorrect");
+      document.getElementById("optionD").classList.remove("correct", "incorrect");
+    }
+    
+    function checkAnswer(selected) {
+      const correctAnswer = questions[currentQuestionIndex].correct;
+      const selectedButton = document.getElementById(`option${selected.toUpperCase()}`);
+      
+      if (selected === correctAnswer) {
+        selectedButton.classList.add("correct");
+        alert("Resposta Correta!");
+      } else {
+        selectedButton.classList.add("incorrect");
+        document.getElementById

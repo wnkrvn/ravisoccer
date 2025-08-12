@@ -1,40 +1,107 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Quiz São Paulo FC — 100 Perguntas</title>
-<style>
-  :root {
-    --card-bg: rgba(255,255,255,0.92);
-    --accent: #e60012;
-    --text: #0b1220;
-  }
-  html, body {
-    height: 100%;
-    margin: 0;
-    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  }
-  body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 18px;
-    background: linear-gradient(to right, #e60012 33.33%, #ffffff 33.33%, #ffffff 66.66%, #000000 66.66%);
-  }
-  .app {
-    width: 100%;
-    max-width: 420px;
-  }
-  .card {
-    background: var(--card-bg);
-    border-radius: 16px;
-    padding: 16px;
-    box-shadow: 0 12px 28px rgba(11, 18, 32, 0.14);
-  }
-  .header {
-    display: flex;
-    justify-content: space-between;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo São Paulo FC</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(45deg, red, white, black);
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        .question-container {
+            background-color: white;
+            border-radius: 20px;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .button {
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px;
+            margin: 5px 0;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        .button:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="question-container">
+        <div id="question">Pergunta aqui</div>
+        <button class="button" id="optionA"></button>
+        <button class="button" id="optionB"></button>
+        <button class="button" id="optionC"></button>
+        <button class="button" id="optionD"></button>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Qual é o estádio do São Paulo FC?",
+                answers: { a: "Mineirão", b: "Maracanã", c: "Morumbi", d: "Pacaembu" },
+                correct: "c"
+            },
+            {
+                question: "Quantas Libertadores o São Paulo FC conquistou?",
+                answers: { a: "2", b: "3", c: "5", d: "1" },
+                correct: "b"
+            },
+            {
+                question: "Quem é o maior artilheiro da história do São Paulo FC?",
+                answers: { a: "Rogério Ceni", b: "Müller", c: "Careca", d: "Vagner Love" },
+                correct: "b"
+            },
+            // Include more questions here...
+        ];
+
+        let currentQuestionIndex = 0;
+
+        function loadQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            document.getElementById("question").innerText = currentQuestion.question;
+            document.getElementById("optionA").innerText = currentQuestion.answers.a;
+            document.getElementById("optionB").innerText = currentQuestion.answers.b;
+            document.getElementById("optionC").innerText = currentQuestion.answers.c;
+            document.getElementById("optionD").innerText = currentQuestion.answers.d;
+        }
+
+        function checkAnswer(selected) {
+            const correctAnswer = questions[currentQuestionIndex].correct;
+            if (selected === correctAnswer) {
+                alert("Resposta Correta!");
+            } else {
+                alert("Resposta Incorreta. Tente novamente!");
+            }
+            currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
+            loadQuestion();
+        }
+
+        document.getElementById("optionA").onclick = () => checkAnswer("a");
+        document.getElementById("optionB").onclick = () => checkAnswer("b");
+        document.getElementById("optionC").onclick = () => checkAnswer("c");
+        document.getElementById("optionD").onclick = () => checkAnswer("d");
+
+        loadQuestion();
+    </script>
+</body>
+</html>    justify-content: space-between;
     align-items: center;
     margin-bottom: 12px;
   }

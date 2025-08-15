@@ -1,0 +1,279 @@
+<!DOCTYPE html><html lang="pt-br">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<title>Quiz Brasileirão Temático</title>
+<style>
+  :root{
+    --bg:#0b0e14; --fg:#e5e7eb; --muted:#9ca3af; --card:#101624; --accent:#22c55e;
+    --stripe1:#1f2937; --stripe2:#0f172a;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell;color:var(--fg);background:var(--bg)}
+  .app{position:relative;min-height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}/* Dynamic themed background */ .theme{position:absolute;inset:0;z-index:0;transition:background 400ms ease, filter .4s ease} .theme.overlay{background:radial-gradient(1200px 800px at 70% -10%, rgba(255,255,255,.08), transparent 60%), radial-gradient(1000px 700px at -20% 120%, rgba(255,255,255,.06), transparent 50%)}
+
+/* Reusable team patterns / .bg-tricolor{background:repeating-linear-gradient(90deg,#d90429 0 16px,#ffffff 16px 32px,#000000 32px 48px)} / SPFC */ .bg-gremio{background:repeating-linear-gradient(90deg,#00a6ff 0 26px,#000 26px 42px,#fff 42px 50px,#00a6ff 50px 76px)} .bg-palmeiras{background:repeating-linear-gradient(45deg,#004d1a 0 28px,#0a7b34 28px 56px)} .bg-corinthians{background:repeating-linear-gradient(135deg,#000 0 24px,#555 24px 26px,#000 26px 50px)} .bg-santos{background:repeating-linear-gradient(90deg,#000 0 18px,#fff 18px 36px)} .bg-flamengo{background:repeating-linear-gradient(90deg,#a60000 0 28px,#0b0b0b 28px 56px)} .bg-fluminense{background:repeating-linear-gradient(135deg,#7a003c 0 28px,#006a4e 28px 56px,#ffffff 56px 64px)} .bg-botafogo{background:repeating-linear-gradient(45deg,#0b0b0b 0 36px,#1f2937 36px 72px)} .bg-vasco{background:repeating-linear-gradient(135deg,#000 0 34px,#c00000 34px 36px,#000 36px 70px)} .bg-galo{background:repeating-linear-gradient(90deg,#111 0 22px,#222 22px 44px)} .bg-cruzeiro{background:repeating-linear-gradient(45deg,#0037a3 0 28px,#1e56d0 28px 56px)} .bg-gremio2{background:repeating-linear-gradient(90deg,#00a6ff 0 18px,#000 18px 28px,#fff 28px 36px)} .bg-inter{background:repeating-linear-gradient(45deg,#b00000 0 30px,#e00000 30px 60px)} .bg-bahia{background:repeating-linear-gradient(90deg,#0033a0 0 20px,#ffffff 20px 36px,#d50000 36px 56px)} .bg-fortaleza{background:repeating-linear-gradient(90deg,#0033a0 0 22px,#fff 22px 28px,#d50000 28px 50px)} .bg-athletico{background:repeating-linear-gradient(135deg,#000 0 24px,#b00000 24px 36px,#000 36px 60px)} .bg-bragantino{background:repeating-linear-gradient(45deg,#111 0 24px,#c71f1f 24px 26px,#111 26px 52px)} .bg-cuiaba{background:repeating-linear-gradient(45deg,#066f2f 0 28px,#0b9a45 28px 56px)} .bg-goias{background:repeating-linear-gradient(45deg,#004d40 0 28px,#0a7b6f 28px 56px)} .bg-america{background:repeating-linear-gradient(90deg,#007a3d 0 24px,#006233 24px 48px)} .bg-vasco2{background:repeating-linear-gradient(135deg,#000 0 40px,#fff 40px 42px,#000 42px 82px)}
+
+.glass{position:relative;z-index:1;width:min(920px,95%);background:rgba(16,22,36,.76);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,.5)} header{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.08)} header .title{font-weight:800;letter-spacing:.3px} header .lives{display:flex;gap:6px} .heart{width:22px;height:22px;border-radius:50%;position:relative;background:#ef4444;box-shadow:0 0 10px rgba(239,68,68,.5) inset} .heart:before,.heart:after{content:"";position:absolute;background:#ef4444;width:22px;height:22px;border-radius:50%} .heart:before{left:-11px} .heart:after{top:-11px}
+
+.content{padding:18px} .row{display:flex;gap:14px;flex-wrap:wrap;align-items:center} .pill{background:#172036;border:1px solid rgba(255,255,255,.12);padding:8px 12px;border-radius:12px;color:#cbd5e1}
+
+.progress{position:relative;height:14px;background:#0b1220;border:1px solid rgba(255,255,255,.18);border-radius:999px;overflow:hidden} .progress>span{position:absolute;left:0;top:0;bottom:0;width:0%;background:linear-gradient(90deg,rgba(34,197,94,.9),rgba(59,130,246,.9));} /* moving stripes effect */ .progress>span:after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.22) 0 10px,transparent 10px 20px);animation:move 1.2s linear infinite;mix-blend:overlay} @keyframes move{from{transform:translateX(0)}to{transform:translateX(30px)}}
+
+.question{font-size:22px;font-weight:700;margin:10px 0 4px} .teamTag{font-size:13px;color:#93c5fd;margin-bottom:10px}
+
+.answers{display:grid;grid-template-columns:1fr;gap:10px} .btn{background:#1f2937;border:1px solid #2b3b55;padding:12px 14px;border-radius:14px;color:#e5e7eb;font-weight:700;cursor:pointer;transition:transform .06s ease, background .2s ease;} .btn:hover{transform:translateY(-1px)} .btn:active{transform:translateY(1px)} .btn.correct{background:#064e3b;border-color:#10b981} .btn.wrong{background:#3f1d1d;border-color:#ef4444}
+
+.bar{display:flex;gap:10px;align-items:center} .timerWrap{flex:1;height:12px;background:#0b1220;border:1px solid rgba(255,255,255,.1);border-radius:10px;overflow:hidden} .timerBar{height:100%;width:100%;background:linear-gradient(90deg,#60a5fa,#22d3ee);animation:timerMotion 1s linear infinite} @keyframes timerMotion{from{background-position:0 0}to{background-position:100px 0}}
+
+.footer{display:flex;justify-content:space-between;align-items:center;margin-top:8px} .link{font-size:12px;color:#93c5fd}
+
+.center{text-align:center} .big{font-size:28px;font-weight:900} .hidden{display:none}
+
+.teamSelector{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px} .card{background:#0f1627;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:12px;cursor:pointer;transition:transform .06s ease, box-shadow .2s} .card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.25)}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="theme overlay" id="theme"></div>
+  <div class="glass" id="screenStart">
+    <header>
+      <div class="title">Quiz Brasileirão Temático</div>
+      <div class="lives" aria-hidden="true">
+        <div class="heart"></div><div class="heart"></div><div class="heart"></div>
+      </div>
+    </header>
+    <div class="content">
+      <p>Escolha um <b>time-tema</b> para iniciar. O fundo e a UI vão mudar a cada pergunta conforme o time da vez. Você tem <b>5 vidas</b> e <b>10 segundos</b> por pergunta.</p>
+      <div class="teamSelector" id="teamSelector"></div>
+      <div style="margin-top:12px" class="row">
+        <button class="btn" id="btnStart">Começar com tema selecionado</button>
+        <span class="pill">Som: clique, acerto, erro, tempo</span>
+      </div>
+    </div>
+  </div>  <div class="glass hidden" id="screenGame">
+    <header>
+      <div class="title" id="hudTitle">Rodada 1</div>
+      <div class="lives" id="hudLives"></div>
+    </header>
+    <div class="content">
+      <div class="row" style="align-items:center;gap:12px;margin-bottom:8px">
+        <div class="progress" style="flex:1;height:16px">
+          <span id="progressInner"></span>
+        </div>
+        <span class="pill" id="progressText">0/0</span>
+      </div><div class="bar" style="margin:8px 0 14px">
+    <div class="timerWrap"><div class="timerBar" id="timerBar"></div></div>
+    <span class="pill" id="timerText">10s</span>
+  </div>
+
+  <div class="teamTag" id="teamTag"></div>
+  <div class="question" id="question"></div>
+  <div class="answers" id="answers"></div>
+
+  <div class="footer">
+    <span class="link" id="tip"></span>
+    <button class="btn" id="btnSkip">Pular (−1 vida)</button>
+  </div>
+</div>
+
+  </div>  <div class="glass hidden" id="screenEnd">
+    <header>
+      <div class="title">Resultado</div>
+      <div class="lives" aria-hidden="true"></div>
+    </header>
+    <div class="content center">
+      <div class="big" id="endTitle">Parabéns!</div>
+      <p id="endDesc">Você mandou bem demais!</p>
+      <div class="row center" style="justify-content:center;margin-top:10px">
+        <button class="btn" id="btnReplay">Jogar novamente</button>
+        <button class="btn" id="btnHome">Trocar tema</button>
+      </div>
+    </div>
+  </div>
+</div><script>
+// ====== Teams, themes & questions ======
+const TEAMS = [
+  { id:'saopaulo', name:'São Paulo', pattern:'bg-tricolor', ui:'#d90429' },
+  { id:'palmeiras', name:'Palmeiras', pattern:'bg-palmeiras', ui:'#10b981' },
+  { id:'corinthians', name:'Corinthians', pattern:'bg-corinthians', ui:'#fef08a' },
+  { id:'santos', name:'Santos', pattern:'bg-santos', ui:'#e5e7eb' },
+  { id:'flamengo', name:'Flamengo', pattern:'bg-flamengo', ui:'#ef4444' },
+  { id:'fluminense', name:'Fluminense', pattern:'bg-fluminense', ui:'#22d3ee' },
+  { id:'botafogo', name:'Botafogo', pattern:'bg-botafogo', ui:'#e5e7eb' },
+  { id:'vasco', name:'Vasco', pattern:'bg-vasco', ui:'#f87171' },
+  { id:'gremio', name:'Grêmio', pattern:'bg-gremio', ui:'#38bdf8' },
+  { id:'internacional', name:'Internacional', pattern:'bg-inter', ui:'#fca5a5' },
+  { id:'atletico', name:'Atlético-MG', pattern:'bg-galo', ui:'#d1d5db' },
+  { id:'cruzeiro', name:'Cruzeiro', pattern:'bg-cruzeiro', ui:'#93c5fd' },
+  { id:'bahia', name:'Bahia', pattern:'bg-bahia', ui:'#38bdf8' },
+  { id:'fortaleza', name:'Fortaleza', pattern:'bg-fortaleza', ui:'#60a5fa' },
+  { id:'athletico', name:'Athletico-PR', pattern:'bg-athletico', ui:'#f87171' },
+  { id:'bragantino', name:'RB Bragantino', pattern:'bg-bragantino', ui:'#fca5a5' },
+  { id:'cuiaba', name:'Cuiabá', pattern:'bg-cuiaba', ui:'#86efac' },
+  { id:'goias', name:'Goiás', pattern:'bg-goias', ui:'#86efac' },
+  { id:'america', name:'América-MG', pattern:'bg-america', ui:'#86efac' },
+  { id:'vasco2', name:'Vasco (alt)', pattern:'bg-vasco2', ui:'#f87171' },
+];
+
+// One question per team (mix of trivia)
+const QUESTIONS = [
+  { team:'São Paulo', q:'Em qual estádio o São Paulo manda a maioria de seus jogos?', a:['Morumbi','Allianz Parque','Arena Corinthians','Canindé'], c:0 },
+  { team:'Palmeiras', q:'Qual é o apelido mais conhecido do Palmeiras?', a:['Porco','Galo','Peixe','Fla'], c:0 },
+  { team:'Corinthians', q:'Qual é a cor predominante do Corinthians?', a:['Branco e Preto','Azul','Verde','Grená'], c:0 },
+  { team:'Santos', q:'Pelé ficou marcado por qual clube?', a:['Santos','Flamengo','Cruzeiro','Bahia'], c:0 },
+  { team:'Flamengo', q:'Qual é o maior estádio do Rio usado pelo Flamengo?', a:['Maracanã','Nilton Santos','São Januário','Luso-Brasileiro'], c:0 },
+  { team:'Fluminense', q:'As cores do Fluminense são:', a:['Verde, grená e branco','Vermelho e preto','Preto e branco','Azul e branco'], c:0 },
+  { team:'Botafogo', q:'Qual é o símbolo do Botafogo?', a:['Estrela solitária','Três listras','Um porco','Uma âncora'], c:0 },
+  { team:'Vasco', q:'A faixa diagonal tradicional pertence a qual clube?', a:['Vasco','Grêmio','Inter','Goiás'], c:0 },
+  { team:'Grêmio', q:'As cores do Grêmio são:', a:['Azul, preto e branco','Verde e branco','Vermelho e preto','Azul e amarelo'], c:0 },
+  { team:'Internacional', q:'O apelido do Internacional é:', a:['Colorado','Verdão','Raposa','Peixe'], c:0 },
+  { team:'Atlético-MG', q:'Qual é o mascote do Atlético-MG?', a:['Galo','Porco','Urubu','Peixe'], c:0 },
+  { team:'Cruzeiro', q:'O escudo do Cruzeiro tem:', a:['Estrelas do Cruzeiro do Sul','Uma âncora','Um porco','Um galo'], c:0 },
+  { team:'Bahia', q:'O Bahia é tradicional de qual estado?', a:['Bahia','Pernambuco','Ceará','Pará'], c:0 },
+  { team:'Fortaleza', q:'O Fortaleza é rival histórico de qual clube?', a:['Ceará','Sport','Bahia','Náutico'], c:0 },
+  { team:'Athletico-PR', q:'Qual cidade é a casa do Athletico-PR?', a:['Curitiba','Porto Alegre','Belo Horizonte','Fortaleza'], c:0 },
+  { team:'RB Bragantino', q:'Em qual cidade fica o RB Bragantino?', a:['Bragança Paulista','Campinas','Santos','Sorocaba'], c:0 },
+  { team:'Cuiabá', q:'O Cuiabá pertence a qual estado?', a:['Mato Grosso','Pará','Goiás','Bahia'], c:0 },
+  { team:'Goiás', q:'As cores do Goiás são:', a:['Verde e branco','Vermelho e branco','Azul e branco','Preto e branco'], c:0 },
+  { team:'América-MG', q:'Qual é a cor tradicional do América-MG?', a:['Verde','Vermelho','Azul','Amarelo'], c:0 },
+  { team:'Vasco (alt)', q:'O estádio histórico do Vasco é:', a:['São Januário','Maracanã','Nilton Santos','Pacaembu'], c:0 },
+];
+
+// map team name -> theme id
+const TEAM_THEME = {
+  'São Paulo':'saopaulo','Palmeiras':'palmeiras','Corinthians':'corinthians','Santos':'santos','Flamengo':'flamengo','Fluminense':'fluminense','Botafogo':'botafogo','Vasco':'vasco','Grêmio':'gremio','Internacional':'internacional','Atlético-MG':'atletico','Cruzeiro':'cruzeiro','Bahia':'bahia','Fortaleza':'fortaleza','Athletico-PR':'athletico','RB Bragantino':'bragantino','Cuiabá':'cuiaba','Goiás':'goias','América-MG':'america','Vasco (alt)':'vasco2'
+};
+
+// ====== State ======
+const $ = sel => document.querySelector(sel);
+const $$ = sel => document.querySelectorAll(sel);
+const S = {
+  livesMax:5, lives:5,
+  timePerQ:10, timeLeft:10, timer:null,
+  step:0,
+  order:[],
+  themeChoice:'saopaulo' // default
+};
+
+// ====== Audio (WebAudio bips) ======
+const AC = new (window.AudioContext||window.webkitAudioContext)();
+function tone(freq=440, dur=0.12, type='sine', vol=.2){
+  const o=AC.createOscillator(); const g=AC.createGain(); o.type=type; o.frequency.value=freq; o.connect(g); g.connect(AC.destination); g.gain.value=vol; o.start(); g.gain.exponentialRampToValueAtTime(0.00001, AC.currentTime+dur); o.stop(AC.currentTime+dur);
+}
+const sClick=()=>tone(600,0.06,'square',.15);
+const sCorrect=()=>{tone(660,0.08,'sine',.18); setTimeout(()=>tone(880,0.12,'sine',.18),80)};
+const sWrong=()=>{tone(220,0.16,'sawtooth',.2); setTimeout(()=>tone(180,0.18,'sawtooth',.16),90)};
+const sTick=()=>tone(900,0.03,'triangle',.07);
+
+// ====== UI helpers ======
+function setTheme(themeId){
+  const t = TEAMS.find(x=>x.id===themeId) || TEAMS[0];
+  const el = document.getElementById('theme');
+  el.className = 'theme overlay '+t.pattern;
+  document.documentElement.style.setProperty('--accent', t.ui);
+}
+function renderLives(){
+  const box = $('#hudLives'); box.innerHTML='';
+  for(let i=0;i<S.lives;i++){ const d=document.createElement('div'); d.className='heart'; box.appendChild(d);}  
+}
+function setProgress(){
+  const inner = $('#progressInner'); const txt=$('#progressText');
+  const total = S.order.length; const cur = Math.min(S.step, total);
+  inner.style.width = ((cur/total)*100).toFixed(2)+'%';
+  txt.textContent = `${cur}/${total}`;
+  $('#hudTitle').textContent = `Rodada ${cur+1}`;
+}
+function setTeamTag(name){ $('#teamTag').textContent = 'Tema: '+name; }
+
+function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]];} return arr }
+
+// ====== Game Flow ======
+function buildTeamSelector(){
+  const box = $('#teamSelector'); box.innerHTML='';
+  TEAMS.forEach(t=>{
+    const c=document.createElement('div'); c.className='card'; c.innerHTML=`<div style="font-weight:800;margin-bottom:6px">${t.name}</div><div style="font-size:12px;color:#9ca3af">Tema ${t.name}</div>`; 
+    c.onclick=()=>{ S.themeChoice=t.id; setTheme(t.id); sClick(); };
+    box.appendChild(c);
+  });
+}
+
+function start(){
+  S.lives=S.livesMax; renderLives();
+  S.order = shuffle([...QUESTIONS]);
+  S.step = 0; setProgress();
+  $('#screenStart').classList.add('hidden');
+  $('#screenEnd').classList.add('hidden');
+  $('#screenGame').classList.remove('hidden');
+  nextQuestion();
+}
+
+function nextQuestion(){
+  if(S.step>=S.order.length) return endGame(true);
+  const item = S.order[S.step];
+  const themeId = TEAM_THEME[item.team] || S.themeChoice;
+  setTheme(themeId); setTeamTag(item.team);
+  $('#question').textContent = item.q;
+  const box = $('#answers'); box.innerHTML='';
+  const opts = shuffle(item.a.map((txt,i)=>({txt,i})));
+  opts.forEach(o=>{
+    const b=document.createElement('button'); b.className='btn'; b.textContent=o.txt; 
+    b.onclick=()=>answer(o.i===item.c, b);
+    box.appendChild(b);
+  });
+  resetTimer();
+  $('#tip').textContent = 'Toque rápido: cada pergunta vale 1 ponto. Sem consulta!';
+}
+
+function answer(correct, btn){
+  if(!$('#screenGame') || $('#screenGame').classList.contains('hidden')) return;
+  for(const b of $$('#answers .btn')) b.disabled=true;
+  clearInterval(S.timer);
+  if(correct){ sCorrect(); btn.classList.add('correct'); } else { sWrong(); btn.classList.add('wrong'); loseLife(); }
+  S.step++; setProgress();
+  setTimeout(()=>{ nextQuestion(); }, 650);
+}
+
+function loseLife(){
+  S.lives = Math.max(0, S.lives-1); renderLives();
+  if(S.lives===0) endGame(false);
+}
+
+function resetTimer(){
+  S.timeLeft=S.timePerQ; $('#timerText').textContent=S.timeLeft+'s';
+  const bar = $('#timerBar'); bar.style.width='100%'; bar.style.transition='none';
+  clearInterval(S.timer);
+  let lastTick = S.timeLeft;
+  S.timer = setInterval(()=>{
+    S.timeLeft = Math.max(0, S.timeLeft-1);
+    $('#timerText').textContent=S.timeLeft+'s';
+    const pct = (S.timeLeft/S.timePerQ)*100; bar.style.transition='width .95s linear'; bar.style.width=pct+'%';
+    if(S.timeLeft<lastTick){ sTick(); lastTick=S.timeLeft; }
+    if(S.timeLeft<=0){ clearInterval(S.timer); sWrong(); loseLife(); S.step++; setProgress(); setTimeout(nextQuestion, 450); }
+  },1000);
+}
+
+function endGame(win){
+  clearInterval(S.timer);
+  $('#screenGame').classList.add('hidden');
+  $('#screenEnd').classList.remove('hidden');
+  const total = S.order.length; const cur = Math.min(S.step, total);
+  $('#endTitle').textContent = win? 'Você zerou o Quiz! 🎉' : 'Acabaram as vidas! 😵';
+  $('#endDesc').textContent = `Pontuação: ${cur}/${total}. Tema base: ${TEAMS.find(t=>t.id===S.themeChoice).name}.`;
+}
+
+// Skip button
+$('#btnSkip').onclick=()=>{ sClick(); loseLife(); S.step++; setProgress(); nextQuestion(); };
+
+// Start / Home / Replay
+$('#btnStart').onclick=()=>{ sClick(); start(); };
+$('#btnHome').onclick=()=>{ sClick(); $('#screenEnd').classList.add('hidden'); $('#screenStart').classList.remove('hidden'); };
+$('#btnReplay').onclick=()=>{ sClick(); start(); };
+
+// Init
+buildTeamSelector();
+setTheme(S.themeChoice);
+
+</script></body>
+</html>

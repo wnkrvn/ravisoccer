@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Interativo de Times</title>
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        height: 100%;
+        overflow: hidden;
+        transition: background 1s ease;
+    }
+    .container {
+        position: relative;
+        z-index: 2;
+        width: 90%;
+        max-width: 600px;
+        background-color: rgba(0,0,0,0.7);
+        padding: 20px;
+        border-radius: 15px;
+        text-align: center;
+        color: #fff;
+        margin: auto;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    h1 {
+        margin-bottom: 20px;
+    }
+    #teams {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+    .team-logo {
+        width: 80px;
+        height: 80px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+    .team-logo:hover {
+        transform: scale(1.2);
+    }
+    #question {
+        font-size: 1.2em;
+        margin: 20px 0;
+    }
+    .options {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .option-btn {
+        padding: 10px;
+        font-size: 1em;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .option-btn:hover {
+        transform: scale(1.05);
+    }
+    #score {
+        margin-top: 15px;
+    }
+    #timer {
+        font-size: 1.2em;
+        margin: 10px 0;
+    }
+    #startBtn {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 1em;
+        display: none;
+    }
+
+    /* Fundo animado */
+    body.animated-bg {
+        background: linear-gradient(270deg, #ff0000, #ffffff, #000000);
+        background-size: 600% 600%;
+        animation: GradientBG 15s ease infinite;
+    }
+
+    @keyframes GradientBG {
+        0%{background-position:0% 50%}
+        50%{background-position:100% 50%}
+        100%{background-position:0% 50%}
+    }
+</style>
+</head>
+<body>
+
+<div class="container" id="container">
+    <h1>Quiz do Brasileirão</h1>
+    <div id="teams">
+        <img src="https://upload.wikimedia.org/wikipedia/pt/3/31/Logo_S%C3%A3o_Paulo_FC.svg" alt="São Paulo" class="team-logo" data-team="São Paulo">
+        <img src="https://upload.wikimedia.org/wikipedia/pt/0/04/Palmeiras_logo.svg" alt="Palmeiras" class="team-logo" data-team="Palmeiras">
+        <img src="https://upload.wikimedia.org/wikipedia/pt/0/0e/Gremio_Foot_Ball_Porto_Alegrense_logo.svg" alt="Grêmio" class="team-logo" data-team="Grêmio">
+        <img src="https://upload.wikimedia.org/wikipedia/pt/6/63/Clube_de_Regatas_do_Flamengo_logo.svg" alt="Flamengo" class="team-logo" data-team="Flamengo">
+        <img src="https://upload.wikimedia.org/wikipedia/pt/4/42/Corinthians_logo.svg" alt="Corinthians" class="team-logo" data-team="Corinthians">
+        <img src="https://upload.wikimedia.org/wikipedia/pt/5/5e/Club_Athletico_Paranaense_logo.svg" alt="Athletico-PR" class="team-logo" data-team="Athletico-PR">
+        <img src="https://upload.wikimedia.org/wikipedia/pt/4/44/SC_Internacional_logo.svg" alt="Internacional" class="team-logo" data-team="Internacional">
+        <img src="https://upload.wikimedia.org/wikipedia/pt/9/9c/Cruzeiro_Esporte_Clube_logo.svg" alt="Cruzeiro" class="team-logo" data-team="Cruzeiro">
+        <img src="https://upload.wikimedia.org/wikipedia/pt/8/87/CR_Vasco_da_Gama_logo.svg" alt="Vasco" class="team-logo" data-team="Vasco">
+        <img src="https://upload.wikimedia.org/wikipedia/pt/f/f1/Botafogo_de_Futebol_e_Regatas_logo.svg" alt="Botafogo" class="team-logo" data-team="Botafogo">
+    </div>
+
+    <div id="timer"></div>
+    <div id="question"></div>
+    <div class="options"></div>
+    <div id="score"></div>
+    <button id="startBtn">Voltar para Times</button>
+</div>
+
+<audio id="correctSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
+<audio id="wrongSound" src="https://actions.google.com/sounds/v1/cartoon/boing.ogg"></audio>
+
+<script>
+// Perguntas por time (5 perguntas cada)
+const teamsData = {
+    "São Paulo": {
+        background: "linear-gradient(270deg, #ff0000, #ffffff, #000000)",
+        questions: [
+            {question:"Quem é o atacante principal do São Paulo em 2025?", options:["Jonathan Calleri","Luciano","Eder"], answer:0},
+            {question:"Qual é a cor predominante da camisa do São Paulo?", options:["Vermelho","Preto","Branco"], answer:2},
+            {question:"Qual estádio o São Paulo utiliza?", options:["Morumbi","Beira-Rio","Allianz Parque"], answer:0},
+            {question:"Qual jogador é ídolo histórico do São Paulo?", options:["Raí","Dudu","Zico"], answer:0},
+            {question:"Quantos títulos da Libertadores o São Paulo tem?", options:["2","3","4"], answer:1},
+        ]
+    },
+    "Palmeiras": {
+        background: "linear-gradient(270deg, #004d33, #00a859, #ffffff)",
+        questions: [
+            {question:"Qual jogador do Palmeiras ganhou destaque em 2025?", options:["Dudu","Rony","Gustavo Scarpa"], answer:2},
+            {question:"Qual cor predomina na camisa do Palmeiras?", options:["Verde","Branco","Preto"], answer:0},
+            {question:"Qual estádio é do Palmeiras?", options:["Allianz Parque","Morumbi","Maracanã"], answer:0},
+            {question:"Qual apelido do Palmeiras?", options:["Verdão","Furacão","Raposa"], answer:0},
+            {question:"Quantos títulos da Libertadores o Palmeiras tem?", options:["2","3","5"], answer:2},
+        ]
+    },
+    "Grêmio": {
+        background: "linear-gradient(270deg, #0000ff, #ffffff, #000000)",
+        questions: [
+            {question:"Quem é o goleiro titular do Grêmio?", options:["Brenno","Gabriel Grando","Diego"], answer:0},
+            {question:"Qual é o apelido do Grêmio?", options:["Tricolor","Furacão","Leão"], answer:0},
+            {question:"Qual estádio é do Grêmio?", options:["Arena do Grêmio","Beira-Rio","Maracanã"], answer:0},
+            {question:"Qual cor predomina na camisa do Grêmio?", options:["Azul","Branco","Preto e Branco"], answer:2},
+            {question:"Qual título internacional o Grêmio conquistou 3 vezes?", options:["Libertadores","Sul-Americana","Mundial"], answer:0},
+        ]
+    },
+    "Flamengo": {
+        background: "linear-gradient(270deg, #ff0000, #000000)",
+        questions: [
+            {question:"Quem é o técnico do Flamengo em 2025?", options:["Paulo Sousa","Vanderlei Luxemburgo","Dorival Júnior"], answer:0},
+            {question:"Qual cor predomina na camisa do Flamengo?", options:["Vermelho","Preto","Vermelho e Preto"], answer:2},
+            {question:"Qual estádio o Flamengo utiliza?", options:["Maracanã","Morumbi","Allianz Parque"], answer:0},
+            {question:"Qual é o apelido do Flamengo?", options:["Mengão","Verdão","Furacão"], answer:0},
+            {question:"Quantos títulos da Libertadores o Flamengo tem?", options:["1","2","3"], answer:2},
+        ]
+    },
+    "Corinthians": {
+        background: "linear-gradient(270deg, #000000, #ffffff)",
+        questions: [
+            {question:"Qual camisa 10 joga no Corinthians?", options:["Giuliano","Róger Guedes","Paulinho"], answer:0},
+            {question:"Qual cor predomina na camisa do Corinthians?", options:["Preto","Branco","Preto e Branco"], answer:2},
+            {question:"Qual estádio é do Corinthians?", options:["Arena Corinthians","Morumbi","Beira-Rio"], answer:0},
+            {question:"Qual é o apelido do Corinthians?", options:["Timão","Furacão","Raposa"], answer:0},
+            {question:"Quantos títulos do Brasileirão o Corinthians tem?", options:["6","7","8"], answer:1},
+        ]
+    },
+    "Athletico-PR": {
+        background: "linear-gradient(270deg, #ff0000, #000000)",
+        questions: [
+            {question:"Qual é o apelido do Athletico-PR?", options:["Furacão","Dragão","Capivaras"], answer:0},
+            {question:"Qual cor predomina na camisa do Athletico?", options:["Vermelho","Preto","Vermelho e Preto"], answer:2},
+            {question:"Qual estádio é do Athletico-PR?", options:["Arena da Baixada","Maracanã","Morumbi"], answer:0},
+            {question:"Qual ano o Athletico-PR foi fundado?", options:["1924","1930","1915"], answer:0},
+            {question:"Quantos títulos do Brasileirão o Athletico tem?", options:["0","1","2"], answer:1},
+        ]
+    },
+    "Internacional": {
+        background: "linear-gradient(270deg, #ff0000, #ffffff)",
+        questions: [
+            {question:"Qual estádio é do Internacional?", options:["Beira-Rio","Morumbi","Allianz Parque"], answer:0},
+            {question:"Qual cor predomina na camisa do Internacional?", options:["Vermelho","Branco","Vermelho e Branco"], answer:2},
+            {question:"Qual é o apelido do Internacional?", options:["Colorado","Tricolor","Furacão"], answer:0},
+            {question:"Quantos títulos da Libertadores o Internacional tem?", options:["1","2","3"], answer:1},
+            {question:"Quem é ídolo histórico do Internacional?", options:["Falcão","Raí","Dudu"], answer:0},
+        ]
+    },
+    "Cruzeiro": {
+        background: "linear-gradient(270deg, #0000ff, #ffffff)",
+        questions: [
+            {question:"Qual cor predomina na camisa do Cruzeiro?", options:["Azul","Vermelho","Preto"], answer:0},
+            {question:"Qual apelido do Cruzeiro?", options:["Raposa","Leão","Galo"], answer:0},
+            {question:"Qual estádio é do Cruzeiro?", options:["Mineirão","Maracanã","Morumbi"], answer:0},
+            {question:"Quantos títulos do Brasileirão o Cruzeiro tem?", options:["3","4","5"], answer:2},
+            {question:"Qual ano o Cruzeiro foi fundado?", options:["1921","1905","1910"], answer:0},
+        ]
+    },
+    "Vasco": {
+        background: "linear-gradient(270deg, #000000, #ffffff)",
+        questions: [
+            {question:"Qual é o símbolo do Vasco?", options:["Cruz de Malta","Leão","Águia"], answer:0},
+            {question:"Qual cor predomina na camisa do Vasco?", options:["Preto","Branco","Preto e Branco"], answer:2},
+            {question:"Qual estádio é do Vasco?", options:["São Januário","Maracanã","Morumbi"], answer:0},
+            {question:"Qual é o apelido do Vasco?", options:["Gigante da Colina","Furacão","Raposa"], answer:0},
+            {question:"Quantos títulos do Brasileirão o Vasco tem?", options:["3","4","5"], answer:2},
+        ]
+    },
+    "Botafogo": {
+        background: "linear-gradient(270deg, #000000, #ffffff)",
+        questions: [
+            {question:"Qual cor não aparece na camisa tradicional do Botafogo?", options:["Preto","Branco","Azul"], answer:2},
+            {question:"Qual apelido do Botafogo?", options:["Estrela Solitária","Furacão","Raposa"], answer:0},
+            {question:"Qual estádio é do Botafogo?", options:["Nilton Santos","Maracanã","Morumbi"], answer:0},
+            {question:"Qual cor predomina na camisa do Botafogo?", options:["Preto","Branco","Preto e Branco"], answer:2},
+            {question:"Quantos títulos do Brasileirão o Botafogo tem?", options:["1","2","3"], answer:1},
+        ]
+    }
+};
+
+let currentTeam = null;
+let currentQuestion = 0;
+let score = 0;
+let lives = 5;
+let timer = 10;
+let timerInterval;
+
+const teamsEl = document.getElementById('teams');
+const container = document.getElementById('container');
+const questionEl = document.getElementById('question');
+const optionsEl = document.querySelector('.options');
+const scoreEl = document.getElementById('score');
+const timerEl = document.getElementById('timer');
+const startBtn = document.getElementById('startBtn');
+const correctSound = document.getElementById('correctSound');
+const wrongSound = document.getElementById('wrongSound');
+
+teamsEl.querySelectorAll('.team-logo').forEach(logo => {
+    logo.addEventListener('click', () => {
+        currentTeam = logo.dataset.team;
+        document.body.classList.add('animated-bg');
+        container.style.background = 'rgba(0,0,0,0.7)';
+        teamsEl.style.display = 'none';
+        startGame();
+    });
+});
+
+function startGame() {
+    currentQuestion = 0;
+    score = 0;
+    lives = 5;
+    startBtn.style.display = 'none';
+    scoreEl.textContent = `Pontuação: ${score} | Vidas: ${lives}`;
+    nextQuestion();
+}
+
+function startTimer() {
+    timer = 10;
+    timerEl.textContent = `Tempo: ${timer}`;
+    timerInterval = setInterval(() => {
+        timer--;
+        timerEl.textContent = `Tempo: ${timer}`;
+        if(timer <= 0){
+            clearInterval(timerInterval);
+            wrongAnswer();
+        }
+    }, 1000);
+}
+
+function nextQuestion() {
+    const teamQuestions = teamsData[currentTeam].questions;
+    if(currentQuestion >= teamQuestions.length){
+        questionEl.textContent = `Fim de jogo! Sua pontuação: ${score}`;
+        optionsEl.innerHTML = '';
+        startBtn.style.display = 'inline-block';
+        return;
+    }
+    const q = teamQuestions[currentQuestion];
+    questionEl.textContent = q.question;
+    optionsEl.innerHTML = '';
+    q.options.forEach((opt, index) => {
+        const btn = document.createElement('button');
+        btn.textContent = opt;
+        btn.className = 'option-btn';
+        btn.onclick = () => selectAnswer(index);
+        optionsEl.appendChild(btn);
+    });
+    startTimer();
+}
+
+function selectAnswer(index){
+    clearInterval(timerInterval);
+    const q = teamsData[currentTeam].questions[currentQuestion];
+    if(index === q.answer){
+        score++;
+        correctSound.play();
+    } else {
+        lives--;
+        wrongSound.play();
+    }
+    scoreEl.textContent = `Pontuação: ${score} | Vidas: ${lives}`;
+    if(lives <= 0){
+        questionEl.textContent = `Game Over! Sua pontuação: ${score}`;
+        optionsEl.innerHTML = '';
+        startBtn.style.display = 'inline-block';
+    } else {
+        currentQuestion++;
+        setTimeout(nextQuestion, 700);
+    }
+}
+
+function wrongAnswer(){
+    lives--;
+    wrongSound.play();
+    scoreEl.textContent = `Pontuação: ${score} | Vidas: ${lives}`;
+    if(lives <= 0){
+        questionEl.textContent = `Game Over! Sua pontuação: ${score}`;
+        optionsEl.innerHTML = '';
+        startBtn.style.display = 'inline-block';
+    } else {
+        currentQuestion++;
+        nextQuestion();
+    }
+}
+
+startBtn.addEventListener('click', () => {
+    teamsEl.style.display = 'flex';
+    questionEl.textContent = '';
+    optionsEl.innerHTML = '';
+    timerEl.textContent = '';
+    document.body.classList.remove('animated-bg');
+});
+</script>
+
+</body>
+</html>

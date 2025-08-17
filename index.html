@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fortune Casino — Quiz com Dinheiro Real (Starter HTML)</title>
+<meta name="theme-color" content="#111317">
+<style>
+:root{
+  --bg:#0b0e16; --card:#121725; --muted:#a9b4d0; --pri:#ffffff; --acc:#2bd576; --danger:#ff5468; --yellow:#ffd166;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--pri);font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Arial}
+.container{max-width:1100px;margin:0 auto;padding:20px}
+.header{display:flex;align-items:center;gap:12px;justify-content:space-between}
+.logo{font-weight:800;letter-spacing:.5px}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid #1b2133;border-radius:20px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.25);margin-bottom:12px}
+.btn{padding:12px 16px;border-radius:12px;border:1px solid #2a3144;background:#111317;color:#fff;cursor:pointer;transition:.2s}
+.btn:hover{transform:translateY(-1px)}
+.btn-acc{background:var(--acc);color:#000;border:none}
+.btn-danger{background:var(--danger);border:none}
+.input{padding:12px;border-radius:12px;border:1px solid #2a3144;background:#0f1320;color:#fff;width:100%}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.badge{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid #2a3144;color:var(--muted)}
+.kpi{display:flex;flex-direction:column;gap:6px}
+.kpi .big{font-size:26px;font-weight:800}
+.question{font-size:18px;margin:6px 0 12px}
+.option{padding:10px;border-radius:12px;border:1px solid #2a3144;background:#0e1220;cursor:pointer}
+.option.selected{outline:2px solid var(--yellow);background:#121832}
+hr{border:0;border-top:1px solid #1b2133;margin:12px 0}
+footer{opacity:.7;font-size:12px;padding:24px 0;text-align:center}
+table{width:100%;border-collapse:collapse}
+th,td{padding:8px;border-bottom:1px solid #1b2133;text-align:left;font-size:14px}
+.small{font-size:12px;opacity:.85}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="logo">🎰 <b>Fortune Casino</b> • Quiz</div>
+    <div id="userBox"><span class="badge">Não conectado</span></div>
+  </div>
+
+  <div class="row" style="margin-top:12px">
+    <div style="flex:2;min-width:280px">
+      <div class="card">
+        <div class="row" style="align-items:center;justify-content:space-between">
+          <div class="kpi"><span class="badge">Entrada por rodada</span><span class="big">R$ <span id="entryFee">1,00</span></span></div>
+          <div class="kpi"><span class="badge">Saldo</span><span class="big">R$ <span id="balance">0,00</span></span></div>
+          <div class="row">
+            <button class="btn" onclick="openDeposit()">Depositar</button>
+            <button class="btn" onclick="openWithdraw()">Sacar</button>
+            <button class="btn" onclick="toggleAdmin()">Admin</button>
+          </div>
+        </div>
+        <hr>
+        <div id="gameArea">
+          <div class="badge">Pronto para jogar?</div>
+          <h2>Responda <span id="qCount">5</span> perguntas. Quanto mais acertos, maior o prêmio 💰</h2>
+          <div class="small">Multiplicadores (acertos → x): 0→0 • 1→0 • 2→1.1 • 3→1.5 • 4→2.0 • 5→3.0</div><br>
+          <button class="btn btn-acc" onclick="startRound()">Começar rodada</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Histórico</h3>
+        <div id="history">—</div>
+      </div>
+    </div>
+
+    <div style="flex:1;min-width:280px">
+      <div class="card">
+        <h3>Entrar</h3>
+        <div id="authBox">
+          <input class="input" id="email" placeholder="Email"><br><br>
+          <input class="input" id="name" placeholder="Nome (no cadastro)"><br><br>
+          <input class="input" id="pass" type="password" placeholder="Senha"><br><br>
+          <div class="row">
+            <button class="btn" onclick="register()">Cadastrar</button>
+            <button class="btn" onclick="login()">Login</button>
+          </div>
+        </div>
+        <div id="afterAuth" class="hidden">
+          <div class="badge" id="welcome"></div><br>
+          <button class="btn" onclick="logout()">Sair</button>
+        </div>
+      </div>
+
+      <div id="adminPanel" class="card hidden">
+        <h3>Admin</h3>
+        <div id="adminLogin">
+          <input class="input" id="adminPass" type="password" placeholder="Senha admin (padrão: admin123)"><br><br>
+          <button class="btn" onclick="adminAuth()">Entrar painel</button>
+        </div>
+        <div id="adminArea" class="hidden">
+          <div class="badge">Painel Administrativo</div><br>
+          <div class="small">Aprovar depósitos, marcar saques pagos, criar perguntas.</div><br>
+          <h4>Depósitos Pendentes</h4>
+          <div id="adminDeposits">—</div>
+          <hr>
+          <h4>Saques Pendentes</h4>
+          <div id="adminWithdrawals">—</div>
+          <hr>
+          <h4>Adicionar Pergunta</h4>
+          <div class="grid">
+            <input class="input" id="qCat" placeholder="Categoria" value="Geral">
+            <select class="input" id="qDif"><option>Fácil</option><option>Médio</option><option>Difícil</option></select>
+            <input class="input" id="qText" placeholder="Pergunta">
+            <input class="input" id="qA" placeholder="Opção A">
+            <input class="input" id="qB" placeholder="Opção B">
+            <input class="input" id="qC" placeholder="Opção C">
+            <input class="input" id="qD" placeholder="Opção D">
+            <select class="input" id="qAns"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>
+          </div><br>
+          <button class="btn btn-acc" onclick="adminAddQuestion()">Salvar pergunta</button>
+          <hr>
+          <h4>Últimas Perguntas</h4>
+          <div id="adminQuestions">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>© Fortune Casino — 18+. Jogue com responsabilidade. Starter offline com aprovação manual. Para dinheiro real de verdade, integre Mercado Pago no backend.</footer>
+</div>
+
+<script>
+/* ====== Config do jogo ====== */
+const ENTRY_FEE = 1.00;
+const QUESTIONS_PER_ROUND = 5;
+const CORRECT_TO_MULTIPLIER = {0:0,1:0,2:1.1,3:1.5,4:2.0,5:3.0};
+
+/* ====== Estado (LocalStorage) ====== */
+const store = {
+  get(){ try{ return JSON.parse(localStorage.getItem('fc_store')||'{}') }catch(e){ return {} } },
+  set(v){ localStorage.setItem('fc_store', JSON.stringify(v)) },
+  init(){
+    const s = store.get();
+    s.users ??= [];          // {id,email,name,passHash,balance}
+    s.currentUserId ??= null;
+    s.deposits ??= [];       // {id,userId,amount,status,ref,ts}
+    s.withdrawals ??= [];    // {id,userId,amount,pix,status,ts}
+    s.rounds ??= [];         // {id,userId,stake,corrects,prize,ts}
+    s.questions ??= seedQuestions.slice();
+    s.admin ??= {logged:false};
+    store.set(s);
+  }
+};
+store.init();
+
+/* ====== Utils ====== */
+const fmt = v => (Number(v).toFixed(2)).replace('.',',');
+const uid = () => Math.random().toString(36).slice(2,9);
+const now = () => new Date().toISOString().replace('T',' ').slice(0,19);
+
+function getState(){ return store.get() }
+function setState(s){ store.set(s) }
+
+let currentUser = null;
+let currentQuestions = [];
+let currentAnswers = {};
+
+/* ====== Auth ====== */
+function renderUser(){
+  const ub = document.getElementById('userBox');
+  if(currentUser){
+    ub.innerHTML = `👤 ${currentUser.name} • Saldo: R$ <b id="balanceHdr">${fmt(currentUser.balance)}</b>`;
+    document.getElementById('authBox').classList.add('hidden');
+    document.getElementById('afterAuth').classList.remove('hidden');
+    document.getElementById('welcome').innerText = `Bem-vindo, ${currentUser.name}`;
+  }else{
+    ub.innerHTML = `<span class="badge">Não conectado</span>`;
+    document.getElementById('authBox').classList.remove('hidden');
+    document.getElementById('afterAuth').classList.add('hidden');
+  }
+  document.getElementById('balance').innerText = fmt(currentUser?.balance||0);
+  document.getElementById('entryFee').innerText = fmt(ENTRY_FEE);
+  document.getElementById('qCount').innerText = QUESTIONS_PER_ROUND;
+}
+
+function register(){
+  const email = document.getElementById('email').value.trim().toLowerCase();
+  const name  = document.getElementById('name').value.trim() || 'Jogador';
+  const pass  = document.getElementById('pass').value;
+  if(!email || !pass || pass.length<4) return alert('Preencha email e senha (min 4).');
+  const s = getState();
+  if(s.users.find(u=>u.email===email)) return alert('Email já cadastrado.');
+  s.users.push({id: uid(), email, name, passHash: btoa(pass), balance: 0});
+  s.currentUserId = s.users[s.users.length-1].id;
+  setState(s);
+  currentUser = s.users[s.users.length-1];
+  renderUser(); loadHistory();
+}
+
+function login(){
+  const email = document.getElementById('email').value.trim().toLowerCase();
+  const pass  = document.getElementById('pass').value;
+  const s = getState();
+  const u = s.users.find(u=>u.email===email && u.passHash===btoa(pass));
+  if(!u) return alert('Credenciais inválidas.');
+  s.currentUserId = u.id; setState(s); currentUser = u; renderUser(); loadHistory();
+}
+
+function logout(){
+  const s = getState(); s.currentUserId = null; setState(s); currentUser=null; renderUser();
+}
+
+/* ====== Depósitos/Saques (manual/admin) ====== */
+function openDeposit(){
+  if(!currentUser) return alert('Faça login.');
+  const val = prompt('Valor do depósito (R$):','10');
+  if(!val) return;
+  const amount = Number((val+'').replace(',','.'));
+  if(!(amount>0)) return alert('Valor inválido.');
+  const s = getState();
+  const ref = 'SIM-' + uid().toUpperCase();
+  s.deposits.unshift({id: uid(), userId: currentUser.id, amount, status:'PENDING', ref, ts: now()});
+  setState(s);
+  alert('Depósito criado! Envie o PIX e peça aprovação no Admin (manual). Ref: '+ref);
+  loadHistory();
+}
+
+function openWithdraw(){
+  if(!currentUser) return alert('Faça login.');
+  const val = prompt('Valor do saque (R$):','5');
+  if(!val) return;
+  const amount = Number((val+'').replace(',','.'));
+  if(!(amount>0)) return alert('Valor inválido.');
+  const pix = prompt('Chave PIX para receber:');
+  if(!pix) return;
+  const s = getState();
+  if(amount > currentUser.balance) return alert('Saldo insuficiente.');
+  // debita e cria pedido
+  currentUser.balance -= amount;
+  const idx = s.users.findIndex(u=>u.id===currentUser.id);
+  s.users[idx] = currentUser;
+  s.withdrawals.unshift({id: uid(), userId: currentUser.id, amount, pix, status:'PENDING', ts: now()});
+  setState(s);
+  renderUser(); loadHistory();
+  alert('Pedido de saque criado! Aguarde aprovação.');
+}
+
+/* ====== Jogo ====== */
+function startRound(){
+  if(!currentUser) return alert('Faça login.');
+  // verifica saldo
+  if(currentUser.balance < ENTRY_FEE) return alert('Saldo insuficiente. Faça um depósito.');
+  // sorteia perguntas
+  const s = getState();
+  const pool = s.questions.slice();
+  pool.sort(()=>Math.random()-0.5);
+  currentQuestions = pool.slice(0, QUESTIONS_PER_ROUND);
+  currentAnswers = {};
+  renderRound();
+}
+
+function renderRound(){
+  const area = document.getElementById('gameArea');
+  const list = currentQuestions.map((q,i)=>{
+    return `<div class="card">
+      <div class="badge">${q.category} • ${q.difficulty}</div>
+      <div class="question">${i+1}. ${q.question}</div>
+      <div class="grid">
+        ${['A','B','C','D'].map(k=>{
+          const txt = q['opt_'+k.toLowerCase()];
+          const sel = (currentAnswers[q.id]===k) ? 'selected':'';
+          return `<div class="option ${sel}" onclick="choose(${q.id}, '${k}')">${k}) ${txt}</div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+  area.innerHTML = `
+    <h3>Responda às perguntas e confirme para jogar (R$ <span>${fmt(ENTRY_FEE)}</span>)</h3>
+    ${list}
+    <div class="row" style="justify-content:flex-end">
+      <button class="btn btn-acc" onclick="confirmRound()">Confirmar & Jogar</button>
+    </div>
+  `;
+}
+
+function choose(qid, letter){ currentAnswers[qid]=letter; renderRound(); }
+
+function confirmRound(){
+  if(Object.keys(currentAnswers).length !== currentQuestions.length) return alert('Responda todas as perguntas.');
+  // debita
+  const s = getState();
+  const idx = s.users.findIndex(u=>u.id===currentUser.id);
+  if(s.users[idx].balance < ENTRY_FEE) return alert('Saldo insuficiente.');
+  s.users[idx].balance = +(s.users[idx].balance - ENTRY_FEE).toFixed(2);
+  currentUser = s.users[idx];
+
+  // corrige
+  let corrects = 0;
+  for(const q of currentQuestions){
+    if((q.answer+'').toUpperCase() === (currentAnswers[q.id]||'')) corrects++;
+  }
+  const mult = CORRECT_TO_MULTIPLIER[corrects] ?? 0;
+  const prize = +(ENTRY_FEE * mult).toFixed(2);
+  if(prize>0){
+    s.users[idx].balance = +(s.users[idx].balance + prize).toFixed(2);
+    currentUser = s.users[idx];
+  }
+  s.rounds.unshift({id:uid(), userId: currentUser.id, stake: ENTRY_FEE, corrects, prize, ts: now()});
+  setState(s);
+
+  document.getElementById('gameArea').innerHTML =
+    `<div class="badge">Rodada finalizada</div>
+     <h2>Resultado: ${corrects} acertos • Prêmio R$ ${fmt(prize)}</h2>
+     <button class="btn btn-acc" onclick="startRound()">Jogar de novo</button>`;
+  renderUser(); loadHistory();
+}
+
+/* ====== Histórico ====== */
+function loadHistory(){
+  if(!currentUser){ document.getElementById('history').innerHTML = '—'; return; }
+  const s = getState();
+  const dep = s.deposits.filter(d=>d.userId===currentUser.id)
+    .map(d=>`Depósito R$ ${fmt(d.amount)} — ${d.status} — ${d.ts} <span class="small">(ref ${d.ref})</span>`).join('<br>');
+  const wit = s.withdrawals.filter(w=>w.userId===currentUser.id)
+    .map(w=>`Saque R$ ${fmt(w.amount)} — ${w.status} — ${w.ts}`).join('<br>');
+  const rnd = s.rounds.filter(r=>r.userId===currentUser.id)
+    .map(x=>`Rodada: stake R$ ${fmt(x.stake)} • acertos ${x.corrects} • prêmio R$ ${fmt(x.prize)} • ${x.ts}`).join('<br>');
+  document.getElementById('history').innerHTML =
+    `<b>Depósitos:</b><br>${dep || '—'}<br><br><b>Saques:</b><br>${wit || '—'}<br><br><b>Rodadas:</b><br>${rnd || '—'}`;
+}
+
+/* ====== Admin ====== */
+function toggleAdmin(){
+  const el = document.getElementById('adminPanel');
+  el.classList.toggle('hidden');
+}
+function adminAuth(){
+  const pass = document.getElementById('adminPass').value;
+  const s = getState();
+  if(pass === (s.admin.pass || 'admin123')){
+    s.admin.logged = true; setState(s);
+    document.getElementById('adminLogin').classList.add('hidden');
+    document.getElementById('adminArea').classList.remove('hidden');
+    renderAdmin();
+  }else{
+    alert('Senha incorreta.');
+  }
+}
+function renderAdmin(){
+  const s = getState();
+  // depósitos
+  const deps = s.deposits.filter(d=>d.status==='PENDING').slice(0,50).map(d=>{
+    return `<tr><td>${d.ts}</td><td>#${d.userId}</td><td>R$ ${fmt(d.amount)}</td><td>${d.status}</td><td>${d.ref}</td>
+    <td><button class="btn btn-acc" onclick="adminApproveDeposit('${d.id}')">Aprovar</button></td></tr>`;
+  }).join('');
+  document.getElementById('adminDeposits').innerHTML =
+    `<table><tr><th>Data</th><th>User</th><th>Valor</th><th>Status</th><th>Ref</th><th>Ação</th></tr>${deps||'<tr><td colspan="6">—</td></tr>'}</table>`;
+
+  // saques
+  const wits = s.withdrawals.filter(w=>w.status==='PENDING').slice(0,50).map(w=>{
+    return `<tr><td>${w.ts}</td><td>#${w.userId}</td><td>R$ ${fmt(w.amount)}</td><td>${w.pix}</td><td>${w.status}</td>
+    <td><button class="btn btn-acc" onclick="adminMarkPaid('${w.id}')">Marcar pago</button></td></tr>`;
+  }).join('');
+  document.getElementById('adminWithdrawals').innerHTML =
+    `<table><tr><th>Data</th><th>User</th><th>Valor</th><th>PIX</th><th>Status</th><th>Ação</th></tr>${wits||'<tr><td colspan="6">—</td></tr>'}</table>`;
+
+  // perguntas
+  const qs = s.questions.slice().reverse().slice(0,100).map(q=>{
+    return `<tr><td>${q.id}</td><td>${q.category}</td><td>${q.difficulty}</td><td>${q.question}</td><td>${q.answer}</td>
+    <td><button class="btn btn-danger" onclick="adminDelQuestion(${q.id})">Excluir</button></td></tr>`;
+  }).join('');
+  document.getElementById('adminQuestions').innerHTML =
+    `<table><tr><th>ID</th><th>Cat</th><th>Dif</th><th>Pergunta</th><th>Resp</th><th>Ação</th></tr>${qs||'<tr><td colspan="6">—</td></tr>'}</table>`;
+}
+function adminApproveDeposit(id){
+  const s = getState();
+  const d = s.deposits.find(x=>x.id===id);
+  if(!d) return;
+  d.status='APPROVED';
+  const uidx = s.users.findIndex(u=>u.id===d.userId);
+  s.users[uidx].balance = +(s.users[uidx].balance + d.amount).toFixed(2);
+  setState(s);
+  if(currentUser && currentUser.id===d.userId){ currentUser = s.users[uidx]; renderUser(); loadHistory(); }
+  renderAdmin();
+}
+function adminMarkPaid(id){
+  const s = getState();
+  const w = s.withdrawals.find(x=>x.id===id);
+  if(!w) return;
+  w.status='PAID';
+  setState(s);
+  if(currentUser && currentUser.id===w.userId){ renderUser(); loadHistory(); }
+  renderAdmin();
+}
+function adminAddQuestion(){
+  const cat = document.getElementById('qCat').value.trim()||'Geral';
+  const dif = document.getElementById('qDif').value;
+  const text= document.getElementById('qText').value.trim();
+  const A   = document.getElementById('qA').value.trim();
+  const B   = document.getElementById('qB').value.trim();
+  const C   = document.getElementById('qC').value.trim();
+  const D   = document.getElementById('qD').value.trim();
+  const ans = document.getElementById('qAns').value;
+  if(!text || !A || !B || !C || !D) return alert('Preencha todos os campos.');
+  const s = getState();
+  const id = 100000 + Math.floor(Math.random()*900000);
+  s.questions.push({id,category:cat,difficulty:dif,question:text,opt_a:A,opt_b:B,opt_c:C,opt_d:D,answer:ans});
+  setState(s);
+  document.getElementById('qText').value = document.getElementById('qA').value =
+  document.getElementById('qB').value = document.getElementById('qC').value = document.getElementById('qD').value = '';
+  renderAdmin();
+}
+function adminDelQuestion(id){
+  const s = getState();
+  s.questions = s.questions.filter(q=>q.id!==id);
+  setState(s);
+  renderAdmin();
+}
+
+/* ====== Seeds ====== */
+const seedQuestions = [
+  {id:1,category:"Futebol",difficulty:"Fácil",question:"Qual time é conhecido como Tricolor Paulista?",opt_a:"São Paulo",opt_b:"Palmeiras",opt_c:"Santos",opt_d:"Corinthians",answer:"A"},
+  {id:2,category:"Futebol",difficulty:"Médio",question:"Quem é o maior artilheiro da história do futebol?",opt_a:"Pelé",opt_b:"Cristiano Ronaldo",opt_c:"Messi",opt_d:"Romário",answer:"B"},
+  {id:3,category:"Cultura Pop",difficulty:"Fácil",question:"Qual herói é conhecido como 'Homem de Ferro'?",opt_a:"Bruce Wayne",opt_b:"Tony Stark",opt_c:"Clark Kent",opt_d:"Peter Parker",answer:"B"},
+  {id:4,category:"Geral",difficulty:"Fácil",question:"Quantos continentes existem na Terra?",opt_a:"5",opt_b:"6",opt_c:"7",opt_d:"8",answer:"C"},
+  {id:5,category:"Geral",difficulty:"Médio",question:"Qual é o maior planeta do Sistema Solar?",opt_a:"Terra",opt_b:"Júpiter",opt_c:"Saturno",opt_d:"Netuno",answer:"B"},
+  {id:6,category:"Brasil",difficulty:"Fácil",question:"Qual é a capital do Brasil?",opt_a:"Rio de Janeiro",opt_b:"São Paulo",opt_c:"Brasília",opt_d:"Salvador",answer:"C"},
+  {id:7,category:"Geral",difficulty:"Fácil",question:"Quantos segundos tem um minuto?",opt_a:"30",opt_b:"45",opt_c:"60",opt_d:"90",answer:"C"},
+  {id:8,category:"Futebol",difficulty:"Médio",question:"Qual seleção ganhou a Copa do Mundo de 2002?",opt_a:"Brasil",opt_b:"Alemanha",opt_c:"Itália",opt_d:"França",answer:"A"},
+  {id:9,category:"Tecnologia",difficulty:"Fácil",question:"O que significa 'CPU'?",opt_a:"Unidade Central de Processamento",opt_b:"Unidade de Memória",opt_c:"Placa de Vídeo",opt_d:"Sistema Operacional",answer:"A"},
+  {id:10,category:"Cultura Pop",difficulty:"Médio",question:"Qual série tem a personagem Eleven (Onze)?",opt_a:"Dark",opt_b:"Stranger Things",opt_c:"Lost",opt_d:"The Boys",answer:"B"},
+  {id:11,category:"Geral",difficulty:"Médio",question:"Em que continente fica o Egito?",opt_a:"África",opt_b:"Ásia",opt_c:"Europa",opt_d:"América",answer:"A"},
+  {id:12,category:"Geral",difficulty:"Fácil",question:"2 + 2 = ?",opt_a:"3",opt_b:"4",opt_c:"5",opt_d:"6",answer:"B"},
+  {id:13,category:"Futebol",difficulty:"Difícil",question:"Em que ano o São Paulo venceu sua primeira Libertadores?",opt_a:"1992",opt_b:"1993",opt_c:"1986",opt_d:"1994",answer:"A"},
+  {id:14,category:"Brasil",difficulty:"Médio",question:"Maior estado brasileiro em área?",opt_a:"Amazonas",opt_b:"Pará",opt_c:"Mato Grosso",opt_d:"Bahia",answer:"A"},
+  {id:15,category:"Geral",difficulty:"Médio",question:"Qual metal tem símbolo químico Fe?",opt_a:"Cobre",opt_b:"Ferro",opt_c:"Prata",opt_d:"Estanho",answer:"B"},
+  {id:16,category:"Cultura Pop",difficulty:"Fácil",question:"Quem criou Star Wars?",opt_a:"Steven Spielberg",opt_b:"George Lucas",opt_c:"James Cameron",opt_d:"J. J. Abrams",answer:"B"},
+  {id:17,category:"Tecnologia",difficulty:"Médio",question:"Qual linguagem roda no navegador?",opt_a:"Python",opt_b:"C++",opt_c:"JavaScript",opt_d:"Java",answer:"C"},
+  {id:18,category:"Geral",difficulty:"Médio",question:"Água ferve a que temperatura (°C) ao nível do mar?",opt_a:"50",opt_b:"90",opt_c:"100",opt_d:"120",answer:"C"},
+  {id:19,category:"Geral",difficulty:"Fácil",question:"Cor do céu em um dia claro?",opt_a:"Verde",opt_b:"Azul",opt_c:"Amarelo",opt_d:"Vermelho",answer:"B"},
+  {id:20,category:"Geral",difficulty:"Médio",question:"Quem pintou a Mona Lisa?",opt_a:"Van Gogh",opt_b:"Picasso",opt_c:"Leonardo da Vinci",opt_d:"Michelangelo",answer:"C"}
+];
+
+/* ====== Boot ====== */
+(function boot(){
+  const s = getState();
+  currentUser = s.users.find(u=>u.id===s.currentUserId) || null;
+  renderUser(); loadHistory();
+})();
+</script>
+</body>
+</html>

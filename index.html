@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Minecraft Runner</title>
+  <style>
+    body { margin:0; background:#87ceeb; overflow:hidden; }
+    canvas { display:block; margin:0 auto; background:#5c9e3c; }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="800" height="400"></canvas>
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    let player = { x:50, y:300, w:40, h:40, color:"brown", hp:3, attacking:false };
+    let mobs = [];
+    let score = 0;
+    let frame = 0;
+
+    function spawnMob(){
+      let mob = { x:800, y:300, w:40, h:40, color:"green", hp:1 };
+      mobs.push(mob);
+    }
+
+    function update(){
+      frame++;
+      if(frame % 120 === 0){ spawnMob(); }
+
+      // movimenta mobs
+      mobs.forEach(m => m.x -= 2);
+
+      // ataque auto se encostar
+      mobs.forEach((m, i) => {
+        if(player.x + player.w > m.x && player.x < m.x + m.w){
+          player.attacking = true;
+          m.hp -= 1;
+          if(m.hp <= 0){
+            mobs.splice(i,1);
+            score++;
+          }
+        } else {
+          player.attacking = false;
+        }
+      });
+    }
+
+    function draw(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+
+      // chão
+      ctx.fillStyle="#3a5f0b";
+      ctx.fillRect(0,340,800,60);
+
+      // player
+      ctx.fillStyle=player.attacking ? "red" : player.color;
+      ctx.fillRect(player.x,player.y,player.w,player.h);
+
+      // mobs
+      mobs.forEach(m=>{
+        ctx.fillStyle=m.color;
+        ctx.fillRect(m.x,m.y,m.w,m.h);
+      });
+
+      // score
+      ctx.fillStyle="white";
+      ctx.font="20px Arial";
+      ctx.fillText("Score: "+score,10,25);
+    }
+
+    function loop(){
+      update();
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    loop();
+  </script>
+</body>
+</html>

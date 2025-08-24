@@ -1,0 +1,259 @@
+<!DOCTYPE html><html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Chute de Falta – Arraste para Chutar</title>
+  <style>
+    html, body { height: 100%; margin: 0; background: #0b5; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif; }
+    #game { display: block; width: 100vw; height: 100vh; touch-action: none; }
+    .hud { position: fixed; left: 0; right: 0; top: 0; display: flex; justify-content: space-between; gap: .5rem; padding: .75rem 1rem; color: #fff; mix-blend-mode: normal; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,.4); pointer-events: none; }
+    .btns { position: fixed; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between; padding: .75rem 1rem; }
+    button { background: rgba(255,255,255,.9); border: 0; padding: .6rem .9rem; border-radius: 12px; font-weight: 700; box-shadow: 0 6px 12px rgba(0,0,0,.15); }
+  </style>
+</head>
+<body>
+  <canvas id="game"></canvas>
+  <div class="hud">
+    <div id="info">Arraste do jogador até a direção do chute</div>
+    <div id="placar">Gols: 0</div>
+  </div>
+  <div class="btns">
+    <button id="reset">Recomeçar</button>
+    <button id="mute">🔊 Som (off)</button>
+  </div>  <script>
+  ;(() => {
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+    const info = document.getElementById('info');
+    const placarEl = document.getElementById('placar');
+    const btnReset = document.getElementById('reset');
+    const btnMute = document.getElementById('mute');
+
+    let DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+
+    function resize() {
+      canvas.width = Math.floor(canvas.clientWidth * DPR);
+      canvas.height = Math.floor(canvas.clientHeight * DPR);
+    }
+    const onResize = () => { resize(); layout(); };
+    window.addEventListener('resize', onResize);
+    resize();
+
+    // FIELD LAYOUT (proporcional)
+    let W = canvas.width, H = canvas.height;
+    let field = {};
+    function layout(){
+      W = canvas.width; H = canvas.height;
+      const margin = 0.06 * H;
+      field = {
+        left: 0.04 * W,
+        right: 0.96 * W,
+        top: margin,
+        bottom: H - margin,
+      };
+      field.width = field.right - field.left;
+      field.height = field.bottom - field.top;
+      goal = createGoal();
+      resetBall();
+      placeWall();
+    }
+
+    // ENTIDADES
+    let ball, aim = null, velocity = {x:0,y:0}, moving = false, scored = 0;
+    const BALL_R = 10; // em px @DPR
+
+    function resetBall(){
+      const x = field.left + field.width*0.18;
+      const y = field.top + field.height*0.58;
+      ball = {x, y, r: BALL_R*DPR};
+      velocity.x = 0; velocity.y = 0; moving = false; aim = null;
+    }
+
+    // GOAL
+    let goal;
+    function createGoal(){
+      const gw = field.width*0.18;
+      const gh = field.height*0.33;
+      const gx = field.right - gw - field.width*0.02;
+      const gy = field.top + (field.height-gh)/2;
+      return {x: gx, y: gy, w: gw, h: gh};
+    }
+
+    // DEFENSORES (barreira)
+    let wall = [];
+    function placeWall(){
+      const baseX = field.left + field.width*0.52;
+      const baseY = field.top + field.height*0.56;
+      const s = Math.min(W,H)*0.035;
+      wall = [
+        {x: baseX - s*1.2, y: baseY, r: s},
+        {x: baseX, y: baseY - s*0.2, r: s},
+        {x: baseX + s*1.2, y: baseY + s*0.1, r: s},
+      ];
+    }
+
+    // INPUT via Pointer Events
+    let dragging = false; let startDrag = null;
+    function pointerPos(e){
+      const rect = canvas.getBoundingClientRect();
+      const px = (e.clientX - rect.left) * DPR;
+      const py = (e.clientY - rect.top) * DPR;
+      return {x:px, y:py};
+    }
+
+    canvas.addEventListener('pointerdown', (e)=>{
+      const p = pointerPos(e);
+      const dx = p.x - ball.x, dy = p.y - ball.y;
+      if (Math.hypot(dx,dy) <= ball.r*1.6 && !moving){
+        dragging = true; startDrag = p; aim = {x:p.x, y:p.y};
+        info.textContent = 'Arraste e solte para chutar!';
+      }
+    });
+
+    canvas.addEventListener('pointermove', (e)=>{
+      if(!dragging || moving) return;
+      aim = pointerPos(e);
+    });
+
+    canvas.addEventListener('pointerup', (e)=>{
+      if(!dragging || moving) return;
+      dragging = false;
+      const end = pointerPos(e);
+      const dx = (startDrag.x - end.x);
+      const dy = (startDrag.y - end.y);
+      // força baseada no arrasto, com limites
+      const power = Math.min(28*DPR, Math.hypot(dx,dy)*0.06);
+      const angle = Math.atan2(dy, dx);
+      velocity.x = Math.cos(angle) * power;
+      velocity.y = Math.sin(angle) * power;
+      moving = true; aim = null;
+    });
+
+    // FÍSICA
+    const FRICTION = 0.988; // atrito
+    function update(){
+      if(moving){
+        ball.x += velocity.x; ball.y += velocity.y;
+        velocity.x *= FRICTION; velocity.y *= FRICTION;
+        if (Math.hypot(velocity.x, velocity.y) < 0.08) { moving = false; }
+
+        // colisão com bordas do campo (simples)
+        if (ball.y - ball.r < field.top) { ball.y = field.top + ball.r; velocity.y = Math.abs(velocity.y)*0.5; }
+        if (ball.y + ball.r > field.bottom) { ball.y = field.bottom - ball.r; velocity.y = -Math.abs(velocity.y)*0.5; }
+        if (ball.x - ball.r < field.left) { ball.x = field.left + ball.r; velocity.x = Math.abs(velocity.x)*0.5; }
+
+        // colisão com barreira (círculos)
+        for (const d of wall){
+          const dx = ball.x - d.x, dy = ball.y - d.y;
+          const dist = Math.hypot(dx,dy);
+          const minDist = ball.r + d.r;
+          if (dist < minDist){
+            const nx = dx / (dist || 1), ny = dy / (dist || 1);
+            // empurra para fora e reflete um pouco
+            ball.x = d.x + nx * minDist; ball.y = d.y + ny * minDist;
+            const dot = velocity.x*nx + velocity.y*ny;
+            velocity.x = (velocity.x - 1.6*dot*nx) * 0.6;
+            velocity.y = (velocity.y - 1.6*dot*ny) * 0.6;
+          }
+        }
+
+        // verificação de gol (cruza a linha do gol dentro da trave)
+        const crossed = (ball.x + ball.r >= goal.x) && (ball.y >= goal.y) && (ball.y <= goal.y + goal.h);
+        if (crossed){
+          scored++;
+          placarEl.textContent = `Gols: ${scored}`;
+          info.textContent = 'GOOOOL! Arraste de novo para chutar';
+          // reposiciona fora da rede
+          resetBall();
+        }
+
+        // se passou muito da direita ou parou, permite novo chute
+        if (!moving && ball.x > goal.x + goal.w + 50*DPR) resetBall();
+      }
+    }
+
+    // DESENHO
+    function drawField(){
+      // gramado listrado
+      const g0 = '#1c8f3a', g1 = '#17913a';
+      ctx.fillStyle = g0; ctx.fillRect(0,0,W,H);
+      const stripeH = Math.max(20*DPR, H/14);
+      for (let y=0; y<H; y+=stripeH){
+        ctx.fillStyle = (Math.floor(y/stripeH)%2===0)? g1 : g0;
+        ctx.fillRect(0,y,W,stripeH);
+      }
+      // área do campo
+      ctx.strokeStyle = 'white'; ctx.lineWidth = 3*DPR; ctx.strokeRect(field.left, field.top, field.width, field.height);
+      // gol
+      ctx.fillStyle = 'rgba(255,255,255,.15)';
+      ctx.fillRect(goal.x, goal.y, goal.w, goal.h);
+      // traves
+      ctx.strokeStyle = 'white'; ctx.lineWidth = 6*DPR;
+      ctx.strokeRect(goal.x, goal.y, goal.w, goal.h);
+    }
+
+    function drawWall(){
+      for (const d of wall){
+        ctx.fillStyle = '#b32';
+        ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI*2); ctx.fill();
+        ctx.lineWidth = 2*DPR; ctx.strokeStyle = '#fff'; ctx.stroke();
+      }
+    }
+
+    function drawBall(){
+      // sombra
+      ctx.fillStyle = 'rgba(0,0,0,.2)';
+      ctx.beginPath(); ctx.ellipse(ball.x + 2*DPR, ball.y + 4*DPR, ball.r*0.9, ball.r*0.5, 0, 0, Math.PI*2); ctx.fill();
+      // bola
+      const gradient = ctx.createRadialGradient(ball.x - ball.r*0.4, ball.y - ball.r*0.4, ball.r*0.2, ball.x, ball.y, ball.r);
+      gradient.addColorStop(0, '#fff');
+      gradient.addColorStop(1, '#dcdcdc');
+      ctx.fillStyle = gradient;
+      ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2); ctx.fill();
+      ctx.strokeStyle = '#999'; ctx.lineWidth = 1.5*DPR; ctx.stroke();
+    }
+
+    function drawAim(){
+      if(!aim) return;
+      ctx.lineWidth = 2*DPR; ctx.setLineDash([6*DPR, 6*DPR]);
+      ctx.strokeStyle = 'rgba(255,255,255,.9)';
+      ctx.beginPath(); ctx.moveTo(ball.x, ball.y); ctx.lineTo(aim.x, aim.y); ctx.stroke();
+      ctx.setLineDash([]);
+      // seta
+      const dx = ball.x - aim.x, dy = ball.y - aim.y;
+      const ang = Math.atan2(dy, dx);
+      const len = Math.min(100*DPR, Math.hypot(dx,dy));
+      const ax = ball.x + Math.cos(ang)*len;
+      const ay = ball.y + Math.sin(ang)*len;
+      ctx.fillStyle = 'rgba(255,255,255,.95)';
+      ctx.beginPath();
+      ctx.moveTo(ax, ay);
+      ctx.lineTo(ax - Math.cos(ang - .5)*10*DPR, ay - Math.sin(ang - .5)*10*DPR);
+      ctx.lineTo(ax - Math.cos(ang + .5)*10*DPR, ay - Math.sin(ang + .5)*10*DPR);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function frame(){
+      update();
+      ctx.clearRect(0,0,W,H);
+      drawField();
+      drawWall();
+      drawBall();
+      drawAim();
+      requestAnimationFrame(frame);
+    }
+
+    // Botões
+    btnReset.addEventListener('click', () => { scored = 0; placarEl.textContent = 'Gols: 0'; resetBall(); info.textContent = 'Arraste do jogador até a direção do chute'; });
+
+    let muted = true; // placeholder para som futuro
+    btnMute.addEventListener('click', ()=>{
+      muted = !muted; btnMute.textContent = muted ? '🔇 Som (on)' : '🔊 Som (off)';
+    });
+
+    layout();
+    frame();
+  })();
+  </script></body>
+</html>
